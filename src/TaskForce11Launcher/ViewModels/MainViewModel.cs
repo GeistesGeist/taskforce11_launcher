@@ -116,8 +116,15 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private bool? _arma3ServerOnline;
 
+    /// <summary>
+    /// Spielerzahl als "7/50". Steht von Anfang an da - vor der ersten Abfrage als
+    /// Strichpaar, damit die Zeile nicht erst leer ist und dann plötzlich breiter wird.
+    /// </summary>
     [ObservableProperty]
-    private string? _arma3PlayerCount;
+    private string _arma3PlayerCount = UnknownCount;
+
+    /// <summary>Platzhalter, solange keine Zahlen vorliegen (Gedankenstriche, kein Bindestrich).</summary>
+    private const string UnknownCount = "–/–";
 
     /// <summary>Aus welchem Preset die geladene Modliste stammt - fuer die Kopfzeile der Modliste.</summary>
     [ObservableProperty]
@@ -627,9 +634,13 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 var status = await ServerStatusService.CheckArma3Async(
                     _serverData.Arma3.Ip, _serverData.Arma3.Port, TimeSpan.FromSeconds(3), ct);
                 Arma3ServerOnline = status.IsOnline;
+
+                // Antwortet der Server nicht oder liefert er keine Zahlen, bleibt es beim
+                // Strichpaar - der Punkt daneben sagt ohnehin schon, dass etwas nicht
+                // stimmt. Eine alte Zahl stehen zu lassen waere irrefuehrender.
                 Arma3PlayerCount = status.Players is not null && status.MaxPlayers is not null
                     ? $"{status.Players}/{status.MaxPlayers}"
-                    : null;
+                    : UnknownCount;
             }
 
             // Ohne hinterlegten ServerQuery-Zugang bleibt es beim blossen Knopf - dann

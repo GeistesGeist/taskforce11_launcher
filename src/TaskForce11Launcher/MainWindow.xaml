@@ -164,10 +164,11 @@
                                              Fill="{Binding Arma3ServerOnline, Converter={StaticResource ServerStatusToBrush}}" />
                                     <TextBlock Text="Arma" FontSize="11" Foreground="{StaticResource MutedBrush}"
                                                Margin="6,0,0,0" VerticalAlignment="Center" />
+                                    <!-- Ohne Sichtbarkeitsbindung: die Zahl steht von Anfang an
+                                         da, vor der ersten Abfrage als Strichpaar. -->
                                     <TextBlock Text="{Binding Arma3PlayerCount, StringFormat='({0})'}" FontSize="11"
                                                Foreground="{StaticResource MutedBrush}" Opacity="0.7"
-                                               Margin="4,0,0,0" VerticalAlignment="Center"
-                                               Visibility="{Binding Arma3PlayerCount, Converter={x:Static conv:NullToVisibilityConverter.Instance}}" />
+                                               Margin="4,0,0,0" VerticalAlignment="Center" />
 
                                     <!-- Der TS-Status haengt an TeamspeakOnline, nicht an der
                                          Adresse: ohne hinterlegten ServerQuery-Zugang wird nie
