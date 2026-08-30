@@ -123,15 +123,22 @@
                         </Image>
 
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <TextBlock Text="T A S K  F O R C E  1 1" FontSize="40"
+                            <TextBlock Text="T A S K   F O R C E   1 1" FontSize="46"
                                        FontFamily="{StaticResource HeadingFont}"
-                                       Foreground="{StaticResource TextBrush}" HorizontalAlignment="Center"
+                                       Foreground="#F0EDE6" HorizontalAlignment="Center"
                                        Effect="{StaticResource TextOutlineEffect}" />
-                            <Border Width="240" Height="1" Background="{StaticResource FadeDividerBrush}"
-                                    Margin="0,8,0,8" HorizontalAlignment="Center" />
-                            <TextBlock Text="KOMMANDO SPEZIALKRÄFTE DER MARINE" FontSize="14"
-                                       FontFamily="{StaticResource HeadingFont}"
-                                       Foreground="{StaticResource TextBrush}" HorizontalAlignment="Center"
+                            <Border Width="300" Height="1" Background="{StaticResource FadeDividerBrush}"
+                                    Margin="0,10,0,10" HorizontalAlignment="Center" />
+
+                            <!-- Deutlich groesser als der uebrige Kleintext: Bebas Neue laeuft
+                                 sehr schmal, in 14 Punkt draengen sich die Buchstaben dieser
+                                 langen Zeile so eng, dass sie kaum noch zu entziffern ist.
+                                 Zusammen mit der Sperrung durch Leerzeichen wird daraus wieder
+                                 eine ruhig lesbare Zeile. -->
+                            <TextBlock Text="K O M M A N D O   S P E Z I A L K R Ä F T E   D E R   M A R I N E"
+                                       FontSize="19" FontFamily="{StaticResource HeadingFont}"
+                                       Foreground="#DCD7CC" HorizontalAlignment="Center" TextAlignment="Center"
+                                       TextWrapping="Wrap" MaxWidth="520"
                                        Effect="{StaticResource TextOutlineEffect}" />
                         </StackPanel>
                     </Grid>
@@ -191,7 +198,7 @@
                             <Button Grid.Column="2" Click="OnModsChipClick" Style="{StaticResource GhostButtonStyle}"
                                     Padding="14,9" VerticalAlignment="Center" ToolTip="Modliste anzeigen">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="MODS" FontSize="13" FontFamily="{StaticResource HeadingFont}"
+                                    <TextBlock Text="MODS" FontSize="11" FontWeight="SemiBold"
                                                Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
                                     <Border CornerRadius="2" Background="#1AFFFFFF" Padding="6,1" Margin="8,0,0,0">
                                         <TextBlock Text="{Binding Mods.Count}" FontSize="10" Foreground="{StaticResource MutedBrush}" />
@@ -202,10 +209,13 @@
                             <StackPanel Grid.Column="3" Orientation="Horizontal">
                                 <Button Content="&#128337;" ToolTip="Verlauf" Click="OnHistoryClick"
                                         Style="{StaticResource IconButtonStyle}" Width="36" Height="36" FontSize="14" Margin="6,0,0,0" />
-                                <Button Content="&#127908;" ToolTip="Mit dem TeamSpeak-Server verbinden"
+                                <Button ToolTip="Mit dem TeamSpeak-Server verbinden"
                                         Command="{Binding ConnectTeamspeakCommand}"
-                                        Style="{StaticResource IconButtonStyle}" Width="36" Height="36" FontSize="14" Margin="2,0,0,0"
-                                        Visibility="{Binding TeamspeakHost, Converter={x:Static conv:NullToVisibilityConverter.Instance}}" />
+                                        Style="{StaticResource IconButtonStyle}" Width="36" Height="36" Margin="2,0,0,0"
+                                        Visibility="{Binding TeamspeakHost, Converter={x:Static conv:NullToVisibilityConverter.Instance}}">
+                                    <Image Source="Assets/teamspeak.png" Width="19" Height="19"
+                                           RenderOptions.BitmapScalingMode="HighQuality" />
+                                </Button>
                             </StackPanel>
 
                             <Border Grid.Column="4" Width="1" Background="{StaticResource PanelBorderBrush}" Margin="18,2" />
@@ -238,7 +248,7 @@
 
                             <Button Grid.Column="7" Content="{Binding StartButtonLabel}" Command="{Binding PrepareAndLaunchCommand}"
                                     IsEnabled="{Binding CanLaunch}" Effect="{StaticResource AccentGlowEffect}"
-                                    FontFamily="{StaticResource HeadingFont}" FontSize="21" Padding="34,7,34,5" />
+                                    FontSize="16" Padding="34,10" />
                         </Grid>
                     </Border>
 

@@ -31,6 +31,7 @@
     <None Remove="Assets\app.ico" />
     <Resource Include="Assets\logo.png" />
     <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\teamspeak.png" />
 
     <!-- Eingebettet, weil Bebas Neue auf keinem Windows vorinstalliert ist. Ohne das
          faende WPF sie auf den Rechnern der Mitglieder nicht und fiele stillschweigend
