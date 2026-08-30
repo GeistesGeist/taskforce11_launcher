@@ -77,6 +77,12 @@
             <!-- Enger, fast deckender schwarzer Saum fuer Text direkt auf dem Bild. -->
             <DropShadowEffect x:Key="TextOutlineEffect" Color="#000000" BlurRadius="5" ShadowDepth="0" Opacity="0.95" />
 
+            <!-- Fuer die beiden grossen Schriftzuege ueber dem Hintergrundbild. Bebas Neue
+                 laeuft schmal und mit duennen Strichen; auf unruhigem Grund verliert sie
+                 ohne kraeftigen Saum ihre Kanten. Deutlich weiter gezogen und voll deckend,
+                 damit die Buchstaben sich klar gegen das Bild absetzen. -->
+            <DropShadowEffect x:Key="HeroTextOutlineEffect" Color="#000000" BlurRadius="12" ShadowDepth="0" Opacity="1" />
+
             <Style x:Key="PanelStyle" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource PanelBrush}" />
                 <Setter Property="BorderBrush" Value="{StaticResource PanelStrokeBrush}" />
