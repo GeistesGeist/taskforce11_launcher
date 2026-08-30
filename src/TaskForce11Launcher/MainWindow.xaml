@@ -142,10 +142,15 @@
                                                Margin="4,0,0,0" VerticalAlignment="Center"
                                                Visibility="{Binding Arma3PlayerCount, Converter={x:Static conv:NullToVisibilityConverter.Instance}}" />
 
-                                    <!-- TeamSpeak nur dann, wenn eine Adresse hinterlegt ist -->
+                                    <!-- Der TS-Status haengt an TeamspeakOnline, nicht an der
+                                         Adresse: ohne hinterlegten ServerQuery-Zugang wird nie
+                                         geprueft, der Wert bleibt null und hier steht dann gar
+                                         nichts - besser als ein grauer Punkt, der wie "offline"
+                                         oder "laedt noch" aussieht. Sobald Zugangsdaten in
+                                         serverdata.json stehen, erscheint die Anzeige von selbst. -->
                                     <StackPanel Orientation="Horizontal" Margin="14,0,0,0"
                                                 ToolTip="{Binding TeamspeakHost}"
-                                                Visibility="{Binding TeamspeakHost, Converter={x:Static conv:NullToVisibilityConverter.Instance}}">
+                                                Visibility="{Binding TeamspeakOnline, Converter={x:Static conv:NullToVisibilityConverter.Instance}}">
                                         <Ellipse Width="6" Height="6" VerticalAlignment="Center"
                                                  Fill="{Binding TeamspeakOnline, Converter={StaticResource ServerStatusToBrush}}" />
                                         <TextBlock Text="TS" FontSize="11" Foreground="{StaticResource MutedBrush}"
