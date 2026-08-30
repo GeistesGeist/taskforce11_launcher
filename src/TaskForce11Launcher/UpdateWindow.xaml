@@ -45,8 +45,10 @@
                 <StackPanel VerticalAlignment="Center" Margin="14,0,0,0">
                     <TextBlock Text="T A S K  F O R C E  1 1" FontSize="19" FontFamily="{StaticResource HeadingFont}"
                                Foreground="{StaticResource TextBrush}" />
-                    <TextBlock Text="LAUNCHER" FontSize="12" FontFamily="{StaticResource HeadingFont}" Foreground="{StaticResource MutedBrush}"
-                               Margin="0,1,0,0" />
+                    <!-- Gesperrt und heller als der uebrige Kleintext: Bebas Neue in
+                         kleinen Graden und gedaempftem Grau war hier kaum zu lesen. -->
+                    <TextBlock Text="L A U N C H E R" FontSize="15" FontFamily="{StaticResource HeadingFont}"
+                               Foreground="#B5AEA0" Margin="0,2,0,0" />
                 </StackPanel>
             </StackPanel>
 
