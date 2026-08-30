@@ -1,0 +1,87 @@
+name: Modliste erzeugen
+
+# Laeuft, sobald ein Preset im Repo landet oder sich aendert. Damit genuegt es, die
+# exportierte Datei nach data/presets/ zu legen - workshop.json und modlist.md entstehen
+# daraus von selbst und werden zurueckgeschrieben.
+on:
+  push:
+    paths:
+      - "data/presets/**.html"
+  workflow_dispatch:
+    inputs:
+      preset:
+        description: "Preset-Datei (leer = die zuletzt geaenderte)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Zwei Staende, damit der Vergleich mit dem Vorgaenger-Commit moeglich ist -
+          # daraus ergibt sich, welches Preset dieser Push mitgebracht hat.
+          fetch-depth: 2
+
+      - name: Preset bestimmen
+        id: pick
+        shell: pwsh
+        run: |
+          $preset = "${{ github.event.inputs.preset }}"
+
+          if (-not $preset) {
+              # Was dieser Push an Presets angefasst hat. Bei mehreren gewinnt das
+              # zuletzt genannte - mehr als eines auf einmal ist ohnehin die Ausnahme.
+              $changed = @(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- "data/presets/*.html")
+              if ($changed.Count -gt 0) { $preset = $changed[-1] }
+          }
+
+          if (-not $preset) {
+              # Rueckfall fuer den manuellen Start ohne Angabe und fuer den Fall, dass
+              # der Vergleich nichts hergibt (etwa beim allerersten Commit).
+              $newest = Get-ChildItem "data/presets/*.html" -ErrorAction SilentlyContinue |
+                        Sort-Object LastWriteTime -Descending | Select-Object -First 1
+              if ($newest) { $preset = "data/presets/$($newest.Name)" }
+          }
+
+          if (-not $preset -or -not (Test-Path $preset)) {
+              Write-Host "::error::Kein Preset gefunden, das konvertiert werden koennte."
+              exit 1
+          }
+
+          Write-Host "Preset: $preset"
+          "preset=$preset" >> $env:GITHUB_OUTPUT
+
+      # Bewusst Windows PowerShell 5.1 und nicht pwsh: das ist die Umgebung, in der das
+      # Skript entwickelt und geprueft wurde, und genau der Aufruf, der auch in der
+      # Anleitung steht. Ein Unterschied zwischen den beiden Fassungen faellt so gar
+      # nicht erst als Ueberraschung im Lauf auf.
+      - name: Konvertieren
+        shell: powershell
+        run: .\tools\Convert-Preset.ps1 -PresetPath "${{ steps.pick.outputs.preset }}"
+
+      - name: Ergebnis zurueckschreiben
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/workshop.json data/modlist.md
+
+          # Ohne Aenderung nichts committen - sonst scheitert der Schritt daran, dass es
+          # nichts zu committen gibt, obwohl alles in Ordnung ist.
+          if (git diff --cached --quiet) {
+              Write-Host "Modliste ist bereits aktuell - nichts zu tun."
+              exit 0
+          }
+
+          $name = Split-Path -Leaf "${{ steps.pick.outputs.preset }}"
+          git commit -m "Modliste aus $name erzeugen" -m "Automatisch erzeugt aus dem Preset, das mit $($env:GITHUB_SHA.Substring(0,7)) ins Repo kam."
+          git push
+
+          Write-Host "Modliste aktualisiert."

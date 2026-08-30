@@ -6,20 +6,25 @@ Was sich ohne neues Launcher-Release ändern lässt, und wie ein Release entsteh
 
 Die Pflichtmods stehen in [`data/workshop.json`](../data/workshop.json), die lesbare
 Fassung in [`data/modlist.md`](../data/modlist.md). Der Launcher lädt die Liste bei
-jedem Start neu — ein **Modlisten-Update braucht also kein neues Release**:
+jedem Start neu — ein **Modlisten-Update braucht also kein neues Release**.
 
-1. Preset im Arma 3 Launcher exportieren
-2. Datei nach `data/presets/` legen
-3. Konvertieren:
+**Der übliche Weg:** Preset im Arma 3 Launcher exportieren, die Datei nach
+`data/presets/` legen und committen. Mehr nicht — der Workflow
+[`modlist.yml`](../.github/workflows/modlist.yml) erkennt das neue Preset, erzeugt
+`workshop.json` und `modlist.md` daraus und schreibt sie als eigenen Commit zurück.
+Beim nächsten Launcher-Start haben alle die neue Liste.
 
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File tools/Convert-Preset.ps1 -PresetPath "data/presets/<preset>.html"
-   ```
+Bringt ein Push mehrere Presets mit, gewinnt das zuletzt genannte. Über
+*Actions → Modliste erzeugen → Run workflow* lässt sich auch gezielt eines auswählen.
 
-4. `data/workshop.json` und `data/modlist.md` committen und pushen
+**Von Hand** geht es weiterhin, etwa zum Ausprobieren vor dem Commit:
 
-Beim nächsten Launcher-Start haben alle die neue Liste. Die Reihenfolge des Presets
-bleibt dabei erhalten — sie ist die Ladereihenfolge.
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/Convert-Preset.ps1 -PresetPath "data/presets/<preset>.html"
+```
+
+Die Reihenfolge des Presets bleibt in beiden Fällen erhalten — sie ist die
+Ladereihenfolge.
 
 ## Serverdaten ändern
 
