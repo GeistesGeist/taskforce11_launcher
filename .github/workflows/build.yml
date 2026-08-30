@@ -49,13 +49,20 @@ jobs:
         run: dotnet build TaskForce11Launcher.sln -c Release --no-restore
 
       # Self-contained, damit auf den Spieler-PCs keine .NET-Runtime installiert sein muss.
-      - name: Publish (self-contained, single-file, win-x64)
+      #
+      # Bewusst OHNE PublishSingleFile: das erzeugt eine ausfuehrbare Datei, die sich beim
+      # Start selbst nach %TEMP% entpackt - dasselbe Verhalten, das gepackte Schadsoftware
+      # zeigt, und einer der haeufigsten Ausloeser fuer Fehlalarme bei Virenscannern.
+      # Fuer Velopack bringt es ohnehin nichts: es buendelt die Anwendung selbst in
+      # Setup.exe und Paket, installiert wird am Ende in einen Ordner. Ohne den
+      # Selbstentpacker faellt der Start zudem schneller aus, und Velopack kann echte
+      # Unterschiedspakete bauen, statt bei jedem Update die gesamte Binaerdatei zu
+      # ersetzen.
+      - name: Publish (self-contained, win-x64)
         run: >
           dotnet publish src/TaskForce11Launcher/TaskForce11Launcher.csproj
           -c Release -r win-x64 --self-contained true
           -p:Version=${{ steps.version.outputs.version }}
-          -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
           -p:DebugType=none
           -o ./publish
 
