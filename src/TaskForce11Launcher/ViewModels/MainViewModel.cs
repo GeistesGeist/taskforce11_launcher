@@ -429,13 +429,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         }
     }
 
-    [RelayCommand]
-    private void OpenWorkshopPage(ModStatusItem? item)
-    {
-        if (item is null) return;
-        OpenExternal(item.WorkshopUrl);
-    }
-
     /// <summary>
     /// Verbindet den TeamSpeak-3-Client mit dem Einheitsserver - ein Klick statt Adresse
     /// heraussuchen und eintippen.

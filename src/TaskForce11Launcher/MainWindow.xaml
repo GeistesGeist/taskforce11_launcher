@@ -295,25 +295,21 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Border Grid.Column="0" Width="3" CornerRadius="0" Margin="0,0,10,0"
                                                             Background="{Binding Status, Converter={StaticResource StatusToBrush}}" />
+                                                    <!-- Der Tooltip zeigt den vollen Namen: in der schmalen
+                                                         Schublade werden laengere Modnamen abgeschnitten. -->
                                                     <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12" VerticalAlignment="Center"
                                                                Foreground="{StaticResource TextBrush}" TextTrimming="CharacterEllipsis"
-                                                               ToolTip="{Binding WorkshopUrl}" />
+                                                               ToolTip="{Binding Name}" />
                                                     <Border Grid.Column="2" CornerRadius="2" Padding="8,2" Margin="10,0,4,0"
                                                             Background="{Binding Status, Converter={StaticResource StatusToBrush}, ConverterParameter=Subtle}">
                                                         <TextBlock Text="{Binding StatusLabel}" FontSize="10" FontWeight="SemiBold"
                                                                    Foreground="{Binding Status, Converter={StaticResource StatusToBrush}}" />
                                                     </Border>
-                                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                                        <Button Style="{StaticResource IconButtonStyle}" Content="&#128279;"
-                                                                ToolTip="Im Steam Workshop öffnen"
-                                                                Command="{Binding DataContext.OpenWorkshopPageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                CommandParameter="{Binding}" />
-                                                        <Button Style="{StaticResource IconButtonStyle}" Content="&#8635;"
-                                                                ToolTip="Mod löschen und neu herunterladen"
-                                                                Command="{Binding DataContext.RedownloadModCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                CommandParameter="{Binding}"
-                                                                IsEnabled="{Binding DataContext.CanLaunch, RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                    </StackPanel>
+                                                    <Button Grid.Column="3" Style="{StaticResource IconButtonStyle}" Content="&#8635;"
+                                                            ToolTip="Mod löschen und neu herunterladen"
+                                                            Command="{Binding DataContext.RedownloadModCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"
+                                                            IsEnabled="{Binding DataContext.CanLaunch, RelativeSource={RelativeSource AncestorType=Window}}" />
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>

@@ -25,8 +25,6 @@ public sealed partial class ModStatusItem : ObservableObject
 
     public ulong WorkshopId => Mod.WorkshopId;
 
-    public string WorkshopUrl => $"https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}";
-
     [ObservableProperty]
     private ModStatus _status;
 
