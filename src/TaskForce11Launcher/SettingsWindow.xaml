@@ -1,0 +1,105 @@
+﻿<Window x:Class="TaskForce11Launcher.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Einstellungen - Task Force 11 Launcher"
+        Icon="Assets/app.ico"
+        Height="400" Width="580"
+        Background="{StaticResource FallbackBackgroundBrush}"
+        Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="40" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#260C1013" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Margin" Value="0,2,0,10" />
+            <Setter Property="CaretBrush" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="Chrome" Property="Effect" Value="{StaticResource AccentGlowEffect}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+    </Window.Resources>
+
+    <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <Image Source="Assets/app.ico" Width="16" Height="16" />
+                    <TextBlock Text="EINSTELLUNGEN" Margin="8,0,0,0" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                </StackPanel>
+                <Button Content="&#10005;" Click="OnCloseIconClick" Style="{StaticResource TitleBarCloseButtonStyle}"
+                        HorizontalAlignment="Right" shell:WindowChrome.IsHitTestVisibleInChrome="True" />
+            </Grid>
+
+            <Border Grid.Row="1" Margin="16,0,16,16" Style="{StaticResource PanelStyle}" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="PFADE" FontWeight="SemiBold" FontSize="14"
+                               Foreground="{StaticResource AccentBrightBrush}" Margin="0,0,0,14" />
+
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Arma 3 Installationspfad" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="Arma3PathBox" Grid.Column="0" Margin="0,2,8,10" />
+                            <Button Grid.Column="1" Content="Durchsuchen" Style="{StaticResource GhostButtonStyle}"
+                                    Click="OnBrowseArma3Click" VerticalAlignment="Top" />
+                        </Grid>
+
+                        <TextBlock Text="Nur nötig, wenn Arma 3 nicht automatisch gefunden wurde. Der Ordner ist der, in dem arma3_x64.exe liegt."
+                                   FontSize="11" Opacity="0.75" TextWrapping="Wrap" Margin="0,0,0,16" />
+
+                        <Button Content="Pfade neu erkennen" Style="{StaticResource GhostButtonStyle}"
+                                HorizontalAlignment="Left" FontSize="11" Padding="12,7" Click="OnRedetectClick"
+                                ToolTip="Eingetragenen Pfad verwerfen und Steam und Arma 3 erneut suchen" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+                        <Button Content="Abbrechen" Style="{StaticResource GhostButtonStyle}" Click="OnCancelClick" Margin="0,0,8,0" />
+                        <Button Content="Speichern" Click="OnSaveClick" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

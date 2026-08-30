@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Platforms>x64</Platforms>
+    <AssemblyName>TaskForce11Launcher</AssemblyName>
+    <RootNamespace>TaskForce11Launcher</RootNamespace>
+    <Product>Task Force 11 Launcher</Product>
+    <Company>Task Force 11</Company>
+    <Version>0.1.0</Version>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <!-- Ohne das haengt das SDK "+<git-sha>" an die InformationalVersion - genau den
+         Wert liest das Versionslabel in der Titelleiste, und mit SHA ist er zu lang. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Velopack" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="steam_appid.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="steam_api64.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="config\default-config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Remove="Assets\logo.png" />
+    <None Remove="Assets\app.ico" />
+    <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\app.ico" />
+  </ItemGroup>
+
+</Project>

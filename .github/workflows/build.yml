@@ -1,0 +1,99 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Version bestimmen
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.1.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        run: dotnet restore TaskForce11Launcher.sln
+
+      - name: Build
+        run: dotnet build TaskForce11Launcher.sln -c Release --no-restore
+
+      # Self-contained, damit auf den Spieler-PCs keine .NET-Runtime installiert sein muss.
+      - name: Publish (self-contained, single-file, win-x64)
+        run: >
+          dotnet publish src/TaskForce11Launcher/TaskForce11Launcher.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=none
+          -o ./publish
+
+      - name: Velopack CLI installieren
+        run: dotnet tool install -g vpk
+
+      # Velopack baut Setup.exe plus den Update-Feed, den der Launcher zur
+      # Selbstaktualisierung aus den GitHub-Releases liest.
+      - name: Mit Velopack paketieren
+        run: >
+          vpk pack --packId TaskForce11Launcher
+          --packVersion ${{ steps.version.outputs.version }}
+          --packDir ./publish
+          --mainExe TaskForce11Launcher.exe
+          --outputDir ./releases
+
+      - name: SHA256-Prüfsummen erzeugen
+        shell: pwsh
+        run: |
+          Get-ChildItem ./releases -File | ForEach-Object {
+            $hash = Get-FileHash $_.FullName -Algorithm SHA256
+            "$($hash.Hash)  $($_.Name)" | Out-File -FilePath ./releases/SHA256SUMS.txt -Append -Encoding utf8
+          }
+
+      - name: Build-Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: TaskForce11Launcher-${{ steps.version.outputs.version }}
+          path: ./releases/**
+
+      - name: GitHub-Release anlegen
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Task Force 11 Launcher v${{ steps.version.outputs.version }}
+          prerelease: false
+          body: |
+            ## 📥 Download
+
+            **[TaskForce11Launcher-win-Setup.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.version }}/TaskForce11Launcher-win-Setup.exe)** herunterladen und ausführen - mehr braucht es nicht.
+
+            Die übrigen Dateien unten (`RELEASES`, `*.nupkg`, `*.json`, `SHA256SUMS.txt`) gehören zum Auto-Updater und können ignoriert werden.
+          files: |
+            ./releases/*Setup.exe
+            ./releases/*.nupkg
+            ./releases/RELEASES
+            ./releases/*.json
+            ./releases/SHA256SUMS.txt
+          generate_release_notes: true

@@ -1,0 +1,13 @@
+{
+  "arma3": {
+    "ip": "server.TaskForce11.de",
+    "port": 2302,
+    "password": "tf11"
+  },
+  "teamspeak": {
+    "host": "ts.TaskForce11.de",
+    "password": ""
+  },
+  "missionTime": "Sonntag 16:00",
+  "launcherBackgroundUrl": ""
+}

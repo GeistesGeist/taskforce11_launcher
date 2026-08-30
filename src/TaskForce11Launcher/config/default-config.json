@@ -1,0 +1,5 @@
+{
+  "ModlistUrl": "https://raw.githubusercontent.com/GeistesGeist/taskforce11_launcher/main/data/workshop.json",
+  "ServerDataUrl": "https://raw.githubusercontent.com/GeistesGeist/taskforce11_launcher/main/data/serverdata.json",
+  "GithubRepoUrl": "https://github.com/GeistesGeist/taskforce11_launcher"
+}
