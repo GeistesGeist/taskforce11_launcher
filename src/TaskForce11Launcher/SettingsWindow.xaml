@@ -16,7 +16,9 @@
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="#260C1013" />
+            <!-- Fast schwarzes Feld auf dem ohnehin dunklen Panel - wie die Eingabefelder
+                 in der Einheitsverwaltung, die sich als Vertiefung lesen statt als Kasten. -->
+            <Setter Property="Background" Value="#42000000" />
             <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
@@ -27,7 +29,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -71,8 +73,14 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="PFADE" FontWeight="SemiBold" FontSize="14"
-                               Foreground="{StaticResource AccentBrightBrush}" Margin="0,0,0,14" />
+                    <!-- Kartenkopf wie im Panel: heller Text in Versalien, darunter eine
+                         Trennlinie ueber die volle Breite. Rot bleibt dort den aktiven
+                         Elementen vorbehalten, Ueberschriften sind hell. -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                        <TextBlock Text="P F A D E" FontWeight="SemiBold" FontSize="12"
+                                   Foreground="{StaticResource TextBrush}" />
+                        <Border Height="1" Background="{StaticResource PanelBorderBrush}" Margin="0,10,0,0" />
+                    </StackPanel>
 
                     <StackPanel Grid.Row="1">
                         <TextBlock Text="Arma 3 Installationspfad" />

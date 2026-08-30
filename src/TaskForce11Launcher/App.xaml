@@ -1,122 +1,105 @@
-<Application x:Class="TaskForce11Launcher.App"
+﻿<Application x:Class="TaskForce11Launcher.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
 
-            <!-- Farbwelt von taskforce11.de: fast schwarzer Grund, Graustufen fuer Text,
-                 und als einziger echter Farbakzent das gedeckte Stahlblau #698EAE der
-                 Website. Bewusst zurueckhaltend - eine KSK-Einheit traegt kein Neon. -->
-            <SolidColorBrush x:Key="BackgroundBrush" Color="#08090B" />
-            <SolidColorBrush x:Key="PanelBorderBrush" Color="#26FFFFFF" />
-            <SolidColorBrush x:Key="AccentBrush" Color="#698EAE" />
-            <SolidColorBrush x:Key="AccentBrightBrush" Color="#9FBBD2" />
-            <SolidColorBrush x:Key="AccentHairlineBrush" Color="#40698EAE" />
-            <SolidColorBrush x:Key="TextBrush" Color="#E6E6E6" />
-            <SolidColorBrush x:Key="MutedBrush" Color="#8F8F8F" />
-            <SolidColorBrush x:Key="OkBrush" Color="#4A873B" />
-            <SolidColorBrush x:Key="WarnBrush" Color="#C08A34" />
-            <SolidColorBrush x:Key="ErrorBrush" Color="#8B2929" />
+            <!-- Farbwelt der Einheitsverwaltung (Panel.TaskForce11.de): ein warmes, fast
+                 schwarzes Braun als Grund, Rot als einziger Akzent, Raender in gedecktem
+                 Oliv. Alles bewusst flach und kantig - keine Glasflaechen, keine grossen
+                 Radien, keine tiefen Schatten. Das Panel wirkt wie ein Einsatzterminal,
+                 und der Launcher soll daneben nicht wie ein anderes Programm aussehen. -->
+            <SolidColorBrush x:Key="BackgroundBrush" Color="#100E0C" />
+            <SolidColorBrush x:Key="PanelBorderBrush" Color="#2E2A22" />
+            <SolidColorBrush x:Key="AccentBrush" Color="#C43D2E" />
+            <SolidColorBrush x:Key="AccentBrightBrush" Color="#E05A46" />
+            <SolidColorBrush x:Key="AccentHairlineBrush" Color="#59C43D2E" />
+            <SolidColorBrush x:Key="TextBrush" Color="#CFCABF" />
+            <SolidColorBrush x:Key="MutedBrush" Color="#8A8377" />
+            <SolidColorBrush x:Key="OkBrush" Color="#7A8C4F" />
+            <SolidColorBrush x:Key="WarnBrush" Color="#B8873A" />
+            <SolidColorBrush x:Key="ErrorBrush" Color="#A33224" />
 
-            <!-- Steht, bis das Hintergrundbild aus serverdata.json geladen ist. -->
+            <!-- Steht, bis das Hintergrundbild aus serverdata.json geladen ist. Warme,
+                 sehr dunkle Toene statt eines neutralen Grauverlaufs. -->
             <LinearGradientBrush x:Key="FallbackBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#0B0D10" Offset="0" />
-                <GradientStop Color="#15191F" Offset="0.5" />
-                <GradientStop Color="#08090B" Offset="1" />
+                <GradientStop Color="#12100D" Offset="0" />
+                <GradientStop Color="#1B1815" Offset="0.5" />
+                <GradientStop Color="#0D0B09" Offset="1" />
             </LinearGradientBrush>
 
-            <!-- Dunkelt nur dort ab, wo Text sitzt (oben Titelleiste, unten Kommandoleiste);
-                 die Mitte bleibt fast klar, damit das Bild lesbar bleibt. -->
+            <!-- Dunkelt oben und unten ab, wo Text sitzt; die Mitte bleibt fast klar. -->
             <LinearGradientBrush x:Key="DarkenOverlayBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#8A08090B" Offset="0" />
-                <GradientStop Color="#1A08090B" Offset="0.24" />
-                <GradientStop Color="#1A08090B" Offset="0.66" />
-                <GradientStop Color="#7008090B" Offset="1" />
+                <GradientStop Color="#8C100E0C" Offset="0" />
+                <GradientStop Color="#1A100E0C" Offset="0.24" />
+                <GradientStop Color="#1A100E0C" Offset="0.66" />
+                <GradientStop Color="#73100E0C" Offset="1" />
             </LinearGradientBrush>
 
-            <!-- Panel-Fuellung: ein feiner Lichtstreif oben links, der in einen fast
-                 deckenden dunklen Ton laeuft - genug Kontrast, damit Text auch ueber
-                 unruhigem Bildmaterial lesbar bleibt. -->
-            <LinearGradientBrush x:Key="PanelBrush" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#12FFFFFF" Offset="0" />
-                <GradientStop Color="#07FFFFFF" Offset="0.2" />
-                <GradientStop Color="#EE070809" Offset="1" />
-            </LinearGradientBrush>
+            <!-- Panelfuellung: fast deckend und praktisch einfarbig - im Panel sind die
+                 Karten flache Kaesten, kein Verlauf und kein Lichtstreif. -->
+            <SolidColorBrush x:Key="PanelBrush" Color="#F21A1714" />
 
-            <LinearGradientBrush x:Key="PanelStrokeBrush" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#59FFFFFF" Offset="0" />
-                <GradientStop Color="#1FFFFFFF" Offset="0.5" />
-                <GradientStop Color="#12FFFFFF" Offset="1" />
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="PanelStrokeBrush" Color="#332F27" />
 
-            <LinearGradientBrush x:Key="AccentCtaBrush" StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#4E6E8A" Offset="0" />
-                <GradientStop Color="#7B9EBC" Offset="1" />
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="AccentCtaBrush" Color="#C43D2E" />
 
             <!-- Auslaufende Trennlinie unter dem Einheitsnamen. -->
             <LinearGradientBrush x:Key="FadeDividerBrush" StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#00698EAE" Offset="0" />
-                <GradientStop Color="#73A9C4DA" Offset="0.5" />
-                <GradientStop Color="#00698EAE" Offset="1" />
+                <GradientStop Color="#00C43D2E" Offset="0" />
+                <GradientStop Color="#8CC96A5B" Offset="0.5" />
+                <GradientStop Color="#00C43D2E" Offset="1" />
             </LinearGradientBrush>
 
-            <SolidColorBrush x:Key="TabActiveBrush" Color="#26698EAE" />
+            <SolidColorBrush x:Key="TabActiveBrush" Color="#2EC43D2E" />
 
-            <DropShadowEffect x:Key="CardShadowEffect" Color="#000000" Direction="270" BlurRadius="26" ShadowDepth="8" Opacity="0.42" />
-            <DropShadowEffect x:Key="AccentGlowEffect" Color="#9FBBD2" BlurRadius="18" ShadowDepth="0" Opacity="0.45" />
+            <!-- Deutlich flacher als zuvor: eine leichte Absetzung nach unten, kein
+                 schwebender Schlagschatten. -->
+            <DropShadowEffect x:Key="CardShadowEffect" Color="#000000" Direction="270" BlurRadius="14" ShadowDepth="3" Opacity="0.5" />
+            <DropShadowEffect x:Key="AccentGlowEffect" Color="#C43D2E" BlurRadius="14" ShadowDepth="0" Opacity="0.4" />
 
-            <!-- Enger, fast deckender schwarzer Saum fuer Text, der ohne Panel direkt auf
-                 dem Bild sitzt - liest sich als Kontur, nicht als Weichzeichner. -->
+            <!-- Enger, fast deckender schwarzer Saum fuer Text direkt auf dem Bild. -->
             <DropShadowEffect x:Key="TextOutlineEffect" Color="#000000" BlurRadius="5" ShadowDepth="0" Opacity="0.95" />
 
             <Style x:Key="PanelStyle" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource PanelBrush}" />
                 <Setter Property="BorderBrush" Value="{StaticResource PanelStrokeBrush}" />
                 <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="CornerRadius" Value="14" />
+                <Setter Property="CornerRadius" Value="2" />
                 <Setter Property="Effect" Value="{StaticResource CardShadowEffect}" />
+            </Style>
+
+            <!-- Abschnittsueberschrift im Panel-Stil: klein, in Versalien, gesperrt.
+                 WPF kennt keinen Zeichenabstand - die Sperrung entsteht dort, wo der Text
+                 gesetzt wird, durch eingefuegte Leerzeichen. -->
+            <Style x:Key="SectionHeadingStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
             </Style>
 
             <Style TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource AccentCtaBrush}" />
-                <Setter Property="Foreground" Value="#08090B" />
+                <Setter Property="Foreground" Value="#F5F0E8" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Padding" Value="16,10" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <ScaleTransform ScaleX="1" ScaleY="1" />
-                    </Setter.Value>
-                </Setter>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="ButtonChrome" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <Border x:Name="ButtonChrome" Background="{TemplateBinding Background}"
+                                    CornerRadius="2" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
+                                <!-- Aufhellen statt vergroessern: das Panel arbeitet ohne
+                                     Bewegung, ein hüpfender Knopf faellt daneben auf. -->
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Trigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="ButtonChrome" Storyboard.TargetProperty="Opacity" To="0.9" Duration="0:0:0.12" />
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.02" Duration="0:0:0.12" />
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.02" Duration="0:0:0.12" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.EnterActions>
-                                    <Trigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="ButtonChrome" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.12" />
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.12" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.ExitActions>
+                                    <Setter TargetName="ButtonChrome" Property="Background" Value="{StaticResource AccentBrightBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="ButtonChrome" Property="Background" Value="#A63324" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -124,26 +107,26 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value="0.45" />
+                        <Setter Property="Opacity" Value="0.4" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
-            <!-- Sekundaerer Knopf: transparent, bis er ueberfahren wird. -->
+            <!-- Sekundaerer Knopf: nur ein Rahmen, bis er ueberfahren wird. -->
             <Style x:Key="GhostButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="GhostChrome" Background="Transparent" BorderBrush="{StaticResource PanelBorderBrush}"
-                                    BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <Border x:Name="GhostChrome" Background="#14000000" BorderBrush="{StaticResource PanelBorderBrush}"
+                                    BorderThickness="1" CornerRadius="2" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="GhostChrome" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
-                                    <Setter TargetName="GhostChrome" Property="Background" Value="#12FFFFFF" />
+                                    <Setter TargetName="GhostChrome" Property="Background" Value="#1FC43D2E" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -152,7 +135,7 @@
             </Style>
 
             <Style TargetType="ProgressBar">
-                <Setter Property="Background" Value="#1AFFFFFF" />
+                <Setter Property="Background" Value="#26000000" />
                 <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
@@ -169,12 +152,12 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="2">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Chrome" Property="Background" Value="#1FFFFFFF" />
+                                    <Setter TargetName="Chrome" Property="Background" Value="#1FC43D2E" />
                                     <Setter Property="Foreground" Value="{StaticResource AccentBrightBrush}" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
@@ -203,7 +186,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Chrome" Property="Background" Value="#1AFFFFFF" />
+                                    <Setter TargetName="Chrome" Property="Background" Value="#1FFFFFFF" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -220,8 +203,8 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Chrome" Property="Background" Value="{StaticResource ErrorBrush}" />
-                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                    <Setter TargetName="Chrome" Property="Background" Value="{StaticResource AccentBrush}" />
+                                    <Setter Property="Foreground" Value="#F5F0E8" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -229,13 +212,12 @@
                 </Setter>
             </Style>
 
-            <!-- Schmale, randlose Bildlaufleisten ohne Pfeilknoepfe - die Standard-Leiste
-                 von Windows wuerde in diesem Fenster wie ein Fremdkoerper wirken. -->
+            <!-- Schmale, randlose Bildlaufleisten ohne Pfeilknoepfe. -->
             <Style x:Key="ThemeScrollBarThumb" TargetType="Thumb">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Thumb">
-                            <Border Background="{StaticResource PanelBorderBrush}" CornerRadius="3" />
+                            <Border Background="{StaticResource PanelBorderBrush}" CornerRadius="1" />
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="True"
         WindowStartupLocation="CenterScreen">
-    <Border CornerRadius="14" Background="{StaticResource FallbackBackgroundBrush}"
+    <Border CornerRadius="3" Background="{StaticResource FallbackBackgroundBrush}"
             BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
         <Grid Margin="28,26">
             <Grid.RowDefinitions>
