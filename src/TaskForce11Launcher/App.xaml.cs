@@ -33,7 +33,7 @@ public partial class App : Application
         {
             MessageBox.Show(
                 $"Unerwarteter Fehler: {args.ExceptionObject}",
-                "Task Force 11 Launcher",
+                "TaskForce11 Launcher",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         };
@@ -73,8 +73,9 @@ public partial class App : Application
                 splash.Close();
             }
 
-            // Wurde etwas eingespielt, laeuft bereits der Neustart - dann hier kein
-            // Hauptfenster mehr aufziehen, das gleich wieder verschwinden wuerde.
+            // Wird ein Update eingespielt, wartet der Updater jetzt darauf, dass dieser
+            // Prozess sich beendet - erst dann tauscht er die Dateien aus und startet
+            // neu. Also kein Hauptfenster mehr aufziehen, sondern zuegig beenden.
             if (applied)
             {
                 Shutdown();

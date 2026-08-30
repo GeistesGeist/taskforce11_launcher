@@ -9,7 +9,7 @@
     <Platforms>x64</Platforms>
     <AssemblyName>TaskForce11Launcher</AssemblyName>
     <RootNamespace>TaskForce11Launcher</RootNamespace>
-    <Product>Task Force 11 Launcher</Product>
+    <Product>TaskForce11 Launcher</Product>
     <Company>Task Force 11</Company>
     <Version>0.1.0</Version>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>

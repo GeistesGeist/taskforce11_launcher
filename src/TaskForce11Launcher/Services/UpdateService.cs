@@ -102,7 +102,16 @@ public sealed class UpdateService
 
             progress?.Report(new UpdateStatus("Update wird installiert, Launcher startet neu…", 100));
             WriteLastAttempt(targetVersion);
-            manager.ApplyUpdatesAndRestart(update);
+
+            // silent, weil unser eigenes Fenster den Fortschritt bereits zeigt:
+            // ApplyUpdatesAndRestart wuerde intern silent:false setzen und Velopacks
+            // eigenen Systemdialog daruebersetzen - ein zweites Fortschrittsfenster im
+            // Windows-Standardstil, das neben dem Rest wie ein Fremdkoerper aussieht.
+            //
+            // Der Updater wartet danach darauf, dass dieser Prozess sich beendet (bis zu
+            // 60 Sekunden), erst dann tauscht er die Dateien aus. Das Beenden ist Sache
+            // des Aufrufers - deshalb hier nur das Signal zurueck.
+            manager.WaitExitThenApplyUpdates(update.TargetFullRelease, silent: true, restart: true);
             return true;
         }
         catch (Exception ex)
@@ -148,15 +157,17 @@ public sealed class UpdateService
     }
 
     /// <summary>
-    /// Spielt das bereitliegende Update ein und startet den Launcher neu. Kehrt nur
-    /// zurueck, wenn nichts bereitlag.
+    /// Leitet das Einspielen des bereitliegenden Updates ein. Gibt true zurueck, wenn
+    /// der Updater wartet - der Aufrufer muss die Anwendung dann beenden, sonst laeuft
+    /// dessen Wartezeit (60 Sekunden) ins Leere und das Update bleibt liegen.
     /// </summary>
-    public void ApplyPendingAndRestart()
+    public bool ApplyPendingAndRestart()
     {
-        if (_pendingUpdate is null || _manager is null) return;
+        if (_pendingUpdate is null || _manager is null) return false;
 
         WriteLastAttempt(_pendingUpdate.TargetFullRelease.Version.ToString());
-        _manager.ApplyUpdatesAndRestart(_pendingUpdate);
+        _manager.WaitExitThenApplyUpdates(_pendingUpdate.TargetFullRelease, silent: true, restart: true);
+        return true;
     }
 
     private static (string? Version, DateTime AttemptedAtUtc) ReadLastAttempt()

@@ -732,7 +732,13 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         }
 
         Log($"Update auf {AvailableUpdateVersion} wird eingespielt, Launcher startet neu…");
-        _updateService.ApplyPendingAndRestart();
+
+        // Der Updater wartet auf das Ende dieses Prozesses, bevor er die Dateien
+        // austauscht - ohne das Beenden hier bliebe das Update liegen.
+        if (_updateService.ApplyPendingAndRestart())
+        {
+            Application.Current.Shutdown();
+        }
     }
 
     public void SaveSettings(AppSettings settings)

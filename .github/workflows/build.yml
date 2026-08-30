@@ -1,4 +1,4 @@
-name: Build & Release
+﻿name: Build & Release
 
 on:
   push:
@@ -64,9 +64,16 @@ jobs:
 
       # Velopack baut Setup.exe plus den Update-Feed, den der Launcher zur
       # Selbstaktualisierung aus den GitHub-Releases liest.
+      # packId ist die Identitaet fuer den Auto-Updater und darf sich nie aendern -
+      # sonst erkennen bereits installierte Launcher das neue Release nicht mehr als
+      # ihr eigenes Update und haengen fuer immer auf der alten Version. Der
+      # Anzeigename kommt deshalb ueber packTitle, nicht ueber packId (der ausserdem
+      # keine Leerzeichen enthalten darf).
       - name: Mit Velopack paketieren
         run: >
           vpk pack --packId TaskForce11Launcher
+          --packTitle "TaskForce11 Launcher"
+          --packAuthors "Task Force 11"
           --packVersion ${{ steps.version.outputs.version }}
           --packDir ./publish
           --mainExe TaskForce11Launcher.exe
@@ -91,7 +98,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: Task Force 11 Launcher v${{ steps.version.outputs.version }}
+          name: TaskForce11 Launcher v${{ steps.version.outputs.version }}
           prerelease: false
           body: |
             ## 📥 Download
