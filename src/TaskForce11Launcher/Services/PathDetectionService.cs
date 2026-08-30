@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -106,6 +106,66 @@ public sealed class PathDetectionService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Sucht die ausführbare Datei des TeamSpeak-3-Clients. Erste Wahl ist der
+    /// registrierte ts3server:-Handler - er zeigt genau auf die Installation, die
+    /// Windows für solche Links auch tatsächlich startet, egal wohin sie installiert
+    /// wurde. Danach der Uninstall-Eintrag, zuletzt die üblichen Standardpfade.
+    /// </summary>
+    public string? FindTeamspeakClient()
+    {
+        var fromHandler = ReadTs3UrlHandlerPath();
+        if (fromHandler is not null && File.Exists(fromHandler)) return fromHandler;
+
+        foreach (var (hive, path) in new[]
+                 {
+                     (Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\TeamSpeak 3 Client"),
+                     (Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\TeamSpeak 3 Client"),
+                     (Registry.CurrentUser, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\TeamSpeak 3 Client")
+                 })
+        {
+            var installLocation = ReadRegistryString(hive, path, "InstallLocation");
+            var exe = ResolveTeamspeakExe(installLocation);
+            if (exe is not null) return exe;
+        }
+
+        string[] fallbacks =
+        {
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "TeamSpeak 3 Client"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "TeamSpeak 3 Client")
+        };
+
+        return fallbacks.Select(ResolveTeamspeakExe).FirstOrDefault(exe => exe is not null);
+    }
+
+    /// <summary>
+    /// Der Handler steht in der Registry als vollständige Kommandozeile, also etwa
+    /// "C:\...\ts3client_win64.exe" "%1" - daraus muss nur das Programm selbst heraus.
+    /// </summary>
+    private static string? ReadTs3UrlHandlerPath()
+    {
+        var command = ReadRegistryString(Registry.ClassesRoot, @"ts3server\shell\open\command", valueName: string.Empty);
+        if (string.IsNullOrWhiteSpace(command)) return null;
+
+        var match = Regex.Match(command, "^\\s*\"([^\"]+)\"");
+        if (match.Success) return match.Groups[1].Value;
+
+        // Ohne Anführungszeichen endet der Pfad beim ersten Leerzeichen - das trifft nur
+        // Installationen ohne Leerzeichen im Pfad, sonst ist der Eintrag ohnehin zitiert.
+        var firstToken = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+        return string.IsNullOrWhiteSpace(firstToken) ? null : firstToken;
+    }
+
+    public static string? ResolveTeamspeakExe(string? installDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(installDirectory) || !Directory.Exists(installDirectory)) return null;
+
+        string[] candidates = { "ts3client_win64.exe", "ts3client_win32.exe" };
+        return candidates
+            .Select(name => Path.Combine(installDirectory, name))
+            .FirstOrDefault(File.Exists);
     }
 
     private static string? ReadRegistryString(RegistryKey hive, string subKeyPath, string valueName)

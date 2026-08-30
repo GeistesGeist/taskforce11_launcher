@@ -1,10 +1,13 @@
-namespace TaskForce11Launcher.Models;
+﻿namespace TaskForce11Launcher.Models;
 
 public sealed class AppSettings
 {
     public string? SteamPath { get; set; }
 
     public string? Arma3Path { get; set; }
+
+    /// <summary>Vollständiger Pfad zur ts3client_win64.exe (oder _win32).</summary>
+    public string? TeamspeakPath { get; set; }
 
     /// <summary>Feed mit den Pflichtmods - zeigt auf data/workshop.json im Einheits-Repo.</summary>
     public string ModlistUrl { get; set; } = string.Empty;

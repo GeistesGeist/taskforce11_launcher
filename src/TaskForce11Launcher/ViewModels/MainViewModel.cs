@@ -143,11 +143,17 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             }
         }
 
+        _settings.TeamspeakPath ??= _pathDetection.FindTeamspeakClient();
+
         Arma3Path = _settings.Arma3Path;
 
         Log(Arma3Path is null
             ? "Arma 3 wurde nicht automatisch gefunden - bitte den Pfad in den Einstellungen setzen."
             : $"Arma 3 gefunden: {Arma3Path}");
+
+        // TeamSpeak ist kein Grund zur Sorge, wenn es fehlt - der Start funktioniert
+        // auch ohne, nur der TS-Knopf faellt dann auf den ts3server:-Link zurueck.
+        if (_settings.TeamspeakPath is not null) Log($"TeamSpeak gefunden: {_settings.TeamspeakPath}");
 
         _settingsService.Save(_settings);
     }
@@ -412,9 +418,14 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     }
 
     /// <summary>
-    /// Verbindet den installierten TeamSpeak-3-Client mit dem Einheitsserver. Die Einheit
-    /// setzt TS3 ohnehin voraus, und das ts3server:-Schema registriert der Client bei
-    /// seiner Installation - ein Klick statt Adresse heraussuchen und eintippen.
+    /// Verbindet den TeamSpeak-3-Client mit dem Einheitsserver - ein Klick statt Adresse
+    /// heraussuchen und eintippen.
+    ///
+    /// Bevorzugt wird der bekannte Programmpfad, weil der ts3server:-Link allein nicht
+    /// verlaesslich ist: bei einer portablen Installation registriert TeamSpeak das
+    /// Schema gar nicht, und wenn ein anderes Programm es zuletzt beansprucht hat, landet
+    /// der Klick dort statt bei TeamSpeak. Der Link bleibt der Rueckfall fuer den Fall,
+    /// dass sich kein Pfad ermitteln liess.
     /// </summary>
     [RelayCommand]
     private void ConnectTeamspeak()
@@ -427,7 +438,31 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             url += $"?password={Uri.EscapeDataString(_serverData.Teamspeak.Password)}";
         }
 
-        OpenExternal(url);
+        var client = _settings.TeamspeakPath;
+        if (string.IsNullOrWhiteSpace(client) || !File.Exists(client))
+        {
+            Log("TeamSpeak-Pfad unbekannt - versuche es über die Windows-Verknüpfung.");
+            OpenExternal(url);
+            return;
+        }
+
+        try
+        {
+            // Laeuft bereits eine Instanz, reicht der neu gestartete Prozess die Adresse
+            // an sie weiter und beendet sich selbst - es oeffnet sich also kein zweiter
+            // Client, sondern der vorhandene wechselt auf den Server.
+            Process.Start(new ProcessStartInfo(client, $"\"{url}\"")
+            {
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(client) ?? string.Empty
+            });
+            Log($"Verbinde TeamSpeak mit {TeamspeakHost}…");
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            Log($"TeamSpeak konnte nicht gestartet werden ({ex.Message}) - versuche es über die Windows-Verknüpfung.");
+            OpenExternal(url);
+        }
     }
 
     private void OpenExternal(string url)

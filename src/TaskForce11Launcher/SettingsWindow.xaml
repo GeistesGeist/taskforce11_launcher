@@ -4,7 +4,7 @@
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="Einstellungen - Task Force 11 Launcher"
         Icon="Assets/app.ico"
-        Height="400" Width="580"
+        Height="540" Width="580"
         Background="{StaticResource FallbackBackgroundBrush}"
         Foreground="{StaticResource TextBrush}"
         FontFamily="Segoe UI"
@@ -89,9 +89,23 @@
                         <TextBlock Text="Nur nötig, wenn Arma 3 nicht automatisch gefunden wurde. Der Ordner ist der, in dem arma3_x64.exe liegt."
                                    FontSize="11" Opacity="0.75" TextWrapping="Wrap" Margin="0,0,0,16" />
 
+                        <TextBlock Text="TeamSpeak 3 Client" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TeamspeakPathBox" Grid.Column="0" Margin="0,2,8,10" />
+                            <Button Grid.Column="1" Content="Durchsuchen" Style="{StaticResource GhostButtonStyle}"
+                                    Click="OnBrowseTeamspeakClick" VerticalAlignment="Top" />
+                        </Grid>
+
+                        <TextBlock Text="Die ts3client_win64.exe. Wird normalerweise automatisch gefunden — nötig nur bei einer portablen TeamSpeak-Installation."
+                                   FontSize="11" Opacity="0.75" TextWrapping="Wrap" Margin="0,0,0,16" />
+
                         <Button Content="Pfade neu erkennen" Style="{StaticResource GhostButtonStyle}"
                                 HorizontalAlignment="Left" FontSize="11" Padding="12,7" Click="OnRedetectClick"
-                                ToolTip="Eingetragenen Pfad verwerfen und Steam und Arma 3 erneut suchen" />
+                                ToolTip="Eingetragene Pfade verwerfen und erneut suchen" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">

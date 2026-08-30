@@ -19,6 +19,7 @@ public partial class SettingsWindow : Window
         ResultSettings = current;
 
         Arma3PathBox.Text = current.Arma3Path ?? string.Empty;
+        TeamspeakPathBox.Text = current.TeamspeakPath ?? string.Empty;
     }
 
     private void OnBrowseArma3Click(object sender, RoutedEventArgs e)
@@ -27,11 +28,26 @@ public partial class SettingsWindow : Window
         if (dialog.ShowDialog() == true) Arma3PathBox.Text = dialog.FolderName;
     }
 
+    private void OnBrowseTeamspeakClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "TeamSpeak-3-Client wählen",
+            Filter = "TeamSpeak 3 Client|ts3client_win64.exe;ts3client_win32.exe|Programme|*.exe"
+        };
+
+        if (dialog.ShowDialog() == true) TeamspeakPathBox.Text = dialog.FileName;
+    }
+
     /// <summary>
-    /// Leert das Feld, damit die automatische Erkennung beim Speichern wieder greift -
+    /// Leert beide Felder, damit die automatische Erkennung beim Speichern wieder greift -
     /// der Ausweg, wenn ein einmal falsch gesetzter Pfad die Erkennung dauerhaft blockiert.
     /// </summary>
-    private void OnRedetectClick(object sender, RoutedEventArgs e) => Arma3PathBox.Text = string.Empty;
+    private void OnRedetectClick(object sender, RoutedEventArgs e)
+    {
+        Arma3PathBox.Text = string.Empty;
+        TeamspeakPathBox.Text = string.Empty;
+    }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
@@ -42,6 +58,7 @@ public partial class SettingsWindow : Window
             // gar nicht mehr die richtige sein muss.
             SteamPath = string.IsNullOrWhiteSpace(Arma3PathBox.Text) ? null : _original.SteamPath,
             Arma3Path = string.IsNullOrWhiteSpace(Arma3PathBox.Text) ? null : Arma3PathBox.Text.Trim(),
+            TeamspeakPath = string.IsNullOrWhiteSpace(TeamspeakPathBox.Text) ? null : TeamspeakPathBox.Text.Trim(),
 
             // Feste Anwendungskonfiguration, nicht vom Spieler editierbar - unveraendert
             // uebernehmen. Gepflegt wird sie in config/default-config.json.
