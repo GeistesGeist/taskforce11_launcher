@@ -135,12 +135,26 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Ellipse Width="6" Height="6" VerticalAlignment="Center"
                                              Fill="{Binding Arma3ServerOnline, Converter={StaticResource ServerStatusToBrush}}" />
-                                    <TextBlock Text="Server" FontSize="11" Foreground="{StaticResource MutedBrush}"
+                                    <TextBlock Text="Arma" FontSize="11" Foreground="{StaticResource MutedBrush}"
                                                Margin="6,0,0,0" VerticalAlignment="Center" />
                                     <TextBlock Text="{Binding Arma3PlayerCount, StringFormat='({0})'}" FontSize="11"
                                                Foreground="{StaticResource MutedBrush}" Opacity="0.7"
                                                Margin="4,0,0,0" VerticalAlignment="Center"
                                                Visibility="{Binding Arma3PlayerCount, Converter={x:Static conv:NullToVisibilityConverter.Instance}}" />
+
+                                    <!-- TeamSpeak nur dann, wenn eine Adresse hinterlegt ist -->
+                                    <StackPanel Orientation="Horizontal" Margin="14,0,0,0"
+                                                ToolTip="{Binding TeamspeakHost}"
+                                                Visibility="{Binding TeamspeakHost, Converter={x:Static conv:NullToVisibilityConverter.Instance}}">
+                                        <Ellipse Width="6" Height="6" VerticalAlignment="Center"
+                                                 Fill="{Binding TeamspeakOnline, Converter={StaticResource ServerStatusToBrush}}" />
+                                        <TextBlock Text="TS" FontSize="11" Foreground="{StaticResource MutedBrush}"
+                                                   Margin="6,0,0,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding TeamspeakUserCount, StringFormat='({0})'}" FontSize="11"
+                                                   Foreground="{StaticResource MutedBrush}" Opacity="0.7"
+                                                   Margin="4,0,0,0" VerticalAlignment="Center"
+                                                   Visibility="{Binding TeamspeakUserCount, Converter={x:Static conv:NullToVisibilityConverter.Instance}}" />
+                                    </StackPanel>
                                 </StackPanel>
                                 <TextBlock Text="{Binding MissionTime}" FontSize="10" Foreground="{StaticResource MutedBrush}"
                                            Opacity="0.65" Margin="12,2,0,0" ToolTip="Nächster Missionstermin"

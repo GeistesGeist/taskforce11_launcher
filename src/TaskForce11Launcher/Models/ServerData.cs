@@ -33,5 +33,25 @@ public sealed class TeamspeakInfo
 {
     public string Host { get; set; } = string.Empty;
 
+    /// <summary>Passwort des Sprachservers (nicht das der ServerQuery).</summary>
     public string Password { get; set; } = string.Empty;
+
+    /// <summary>Sprachport - wird gebraucht, um die ServerQuery auf den richtigen virtuellen Server zu schalten.</summary>
+    public int VoicePort { get; set; } = 9987;
+
+    /// <summary>
+    /// ServerQuery-Zugang für die Nutzerzahl. Bleibt einer der drei Werte leer, zeigt der
+    /// Launcher nur die Adresse und keinen Status - er versucht dann gar nicht erst zu
+    /// verbinden.
+    /// </summary>
+    public int QueryPort { get; set; } = 10011;
+
+    public string QueryUser { get; set; } = string.Empty;
+
+    public string QueryPassword { get; set; } = string.Empty;
+
+    public bool HasQueryAccess =>
+        !string.IsNullOrWhiteSpace(Host)
+        && !string.IsNullOrWhiteSpace(QueryUser)
+        && !string.IsNullOrWhiteSpace(QueryPassword);
 }

@@ -131,6 +131,14 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string? _teamspeakHost;
 
+    /// <summary>true = erreichbar, false = nicht erreichbar, null = noch nicht geprüft.</summary>
+    [ObservableProperty]
+    private bool? _teamspeakOnline;
+
+    /// <summary>Belegte von maximalen Plätzen im TeamSpeak, z. B. "7/32".</summary>
+    [ObservableProperty]
+    private string? _teamspeakUserCount;
+
     /// <summary>
     /// Version eines heruntergeladenen, noch nicht eingespielten Updates - null, solange
     /// nichts bereitliegt. Steuert den Hinweis in der Kommandoleiste.
@@ -628,6 +636,18 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 Arma3ServerOnline = status.IsOnline;
                 Arma3PlayerCount = status.Players is not null && status.MaxPlayers is not null
                     ? $"{status.Players}/{status.MaxPlayers}"
+                    : null;
+            }
+
+            // Ohne hinterlegten ServerQuery-Zugang bleibt es beim blossen Knopf - dann
+            // gar nicht erst verbinden, statt jede Minute in einen Fehlschlag zu laufen.
+            if (_serverData is not null && _serverData.Teamspeak.HasQueryAccess)
+            {
+                var ts = await TeamspeakStatusService.CheckAsync(
+                    _serverData.Teamspeak, TimeSpan.FromSeconds(5), ct);
+                TeamspeakOnline = ts.IsOnline;
+                TeamspeakUserCount = ts.Clients is not null && ts.MaxClients is not null
+                    ? $"{ts.Clients}/{ts.MaxClients}"
                     : null;
             }
 

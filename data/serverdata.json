@@ -6,7 +6,11 @@
   },
   "teamspeak": {
     "host": "ts.TaskForce11.de",
-    "password": ""
+    "password": "",
+    "voicePort": 9987,
+    "queryPort": 10011,
+    "queryUser": "",
+    "queryPassword": ""
   },
   "missionTime": "Sonntag 16:00",
   "launcherBackgroundUrl": ""
