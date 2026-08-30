@@ -78,12 +78,21 @@
                 <Setter Property="Effect" Value="{StaticResource CardShadowEffect}" />
             </Style>
 
-            <!-- Abschnittsueberschrift im Panel-Stil: klein, in Versalien, gesperrt.
+            <!-- Bebas Neue, mitgeliefert unter Assets\Fonts. Dieselbe Schrift verwendet
+                 die Einheitsverwaltung fuer ihre Ueberschriften. Sie kennt nur
+                 Grossbuchstaben und ist schmal geschnitten - fuer Ueberschriften genau
+                 richtig, fuer Fliesstext nicht, der bleibt bei Segoe UI.
+                 Die Schreibweise "Ordner/#Familienname" ist Pflicht; ohne das Doppelkreuz
+                 findet WPF die eingebettete Schrift nicht und faellt stillschweigend auf
+                 eine Ersatzschrift zurueck. -->
+            <FontFamily x:Key="HeadingFont">pack://application:,,,/Assets/Fonts/#Bebas Neue</FontFamily>
+
+            <!-- Abschnittsueberschrift im Panel-Stil: in Versalien, leicht gesperrt.
                  WPF kennt keinen Zeichenabstand - die Sperrung entsteht dort, wo der Text
                  gesetzt wird, durch eingefuegte Leerzeichen. -->
             <Style x:Key="SectionHeadingStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="11" />
-                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontFamily" Value="{StaticResource HeadingFont}" />
+                <Setter Property="FontSize" Value="13" />
                 <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
             </Style>
 

@@ -64,7 +64,8 @@
                 <Grid Grid.Row="0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
                         <Image Source="Assets/app.ico" Width="16" Height="16" />
-                        <TextBlock Text="TASKFORCE11 LAUNCHER" Margin="8,0,0,0" FontSize="11" FontWeight="SemiBold"
+                        <TextBlock Text="TASKFORCE11 LAUNCHER" Margin="8,0,0,0" FontSize="13"
+                                   FontFamily="{StaticResource HeadingFont}"
                                    Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
                         <TextBlock Text="{Binding AppVersion}" Margin="6,1,0,0" FontSize="10"
                                    Foreground="{StaticResource MutedBrush}" Opacity="0.55" VerticalAlignment="Center" />
@@ -122,12 +123,14 @@
                         </Image>
 
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <TextBlock Text="T A S K   F O R C E   1 1" FontSize="26" FontWeight="Bold"
+                            <TextBlock Text="T A S K  F O R C E  1 1" FontSize="40"
+                                       FontFamily="{StaticResource HeadingFont}"
                                        Foreground="{StaticResource TextBrush}" HorizontalAlignment="Center"
                                        Effect="{StaticResource TextOutlineEffect}" />
                             <Border Width="240" Height="1" Background="{StaticResource FadeDividerBrush}"
                                     Margin="0,8,0,8" HorizontalAlignment="Center" />
-                            <TextBlock Text="KOMMANDO SPEZIALKRÄFTE DER MARINE" FontSize="11" FontWeight="SemiBold"
+                            <TextBlock Text="KOMMANDO SPEZIALKRÄFTE DER MARINE" FontSize="14"
+                                       FontFamily="{StaticResource HeadingFont}"
                                        Foreground="{StaticResource TextBrush}" HorizontalAlignment="Center"
                                        Effect="{StaticResource TextOutlineEffect}" />
                         </StackPanel>
@@ -188,7 +191,7 @@
                             <Button Grid.Column="2" Click="OnModsChipClick" Style="{StaticResource GhostButtonStyle}"
                                     Padding="14,9" VerticalAlignment="Center" ToolTip="Modliste anzeigen">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="MODS" FontSize="11" FontWeight="SemiBold"
+                                    <TextBlock Text="MODS" FontSize="13" FontFamily="{StaticResource HeadingFont}"
                                                Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
                                     <Border CornerRadius="2" Background="#1AFFFFFF" Padding="6,1" Margin="8,0,0,0">
                                         <TextBlock Text="{Binding Mods.Count}" FontSize="10" Foreground="{StaticResource MutedBrush}" />
@@ -235,7 +238,7 @@
 
                             <Button Grid.Column="7" Content="{Binding StartButtonLabel}" Command="{Binding PrepareAndLaunchCommand}"
                                     IsEnabled="{Binding CanLaunch}" Effect="{StaticResource AccentGlowEffect}"
-                                    FontSize="16" Padding="34,10" />
+                                    FontFamily="{StaticResource HeadingFont}" FontSize="21" Padding="34,7,34,5" />
                         </Grid>
                     </Border>
 
@@ -262,12 +265,12 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Border x:Name="ModsTabChrome" Background="{StaticResource TabActiveBrush}" CornerRadius="2"
                                             Padding="12,6" Cursor="Hand" MouseLeftButtonUp="OnModsTabClick">
-                                        <TextBlock x:Name="ModsTabLabel" Text="MODS" FontSize="11" FontWeight="SemiBold"
+                                        <TextBlock x:Name="ModsTabLabel" Text="MODS" FontSize="13" FontFamily="{StaticResource HeadingFont}"
                                                    Foreground="{StaticResource AccentBrightBrush}" />
                                     </Border>
                                     <Border x:Name="LogTabChrome" Background="Transparent" CornerRadius="2" Padding="12,6"
                                             Margin="4,0,0,0" Cursor="Hand" MouseLeftButtonUp="OnLogTabClick">
-                                        <TextBlock x:Name="LogTabLabel" Text="VERLAUF" FontSize="11" FontWeight="SemiBold"
+                                        <TextBlock x:Name="LogTabLabel" Text="VERLAUF" FontSize="13" FontFamily="{StaticResource HeadingFont}"
                                                    Foreground="{StaticResource MutedBrush}" />
                                     </Border>
                                 </StackPanel>

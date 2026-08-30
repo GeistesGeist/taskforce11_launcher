@@ -31,6 +31,17 @@
     <None Remove="Assets\app.ico" />
     <Resource Include="Assets\logo.png" />
     <Resource Include="Assets\app.ico" />
+
+    <!-- Eingebettet, weil Bebas Neue auf keinem Windows vorinstalliert ist. Ohne das
+         faende WPF sie auf den Rechnern der Mitglieder nicht und fiele stillschweigend
+         auf eine Ersatzschrift zurueck. Die Lizenz (SIL Open Font License) liegt daneben
+         und wird mitgeliefert, wie sie es verlangt. -->
+    <Resource Include="Assets\Fonts\BebasNeue-Regular.ttf" />
+
+    <!-- Die Lizenz kommt als Datei neben die EXE, nicht in sie hinein: die Open Font
+         License verlangt, dass sie mit der Schrift weitergegeben wird, und in einer
+         eingebetteten Ressource kaeme niemand an sie heran. -->
+    <None Include="Assets\Fonts\OFL.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

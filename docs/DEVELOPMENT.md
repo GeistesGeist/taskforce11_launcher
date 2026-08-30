@@ -136,3 +136,25 @@ Wird sie gegen eine neuere Fassung getauscht, sind die versionierten Einstiegspu
 `SteamAPI_SteamUser_v023` und `SteamAPI_SteamUtils_v011`. Ändert Valve eine
 Schnittstellenversion, verschwindet der alte Name aus der Export-Tabelle und der Aufruf
 scheitert zur Laufzeit mit einer `EntryPointNotFoundException`, nicht beim Kompilieren.
+
+## Schrift
+
+Überschriften laufen in **Bebas Neue**, derselben Schrift, die die Einheitsverwaltung
+verwendet (nachweisbar in deren Stylesheet). Sie liegt unter `Assets/Fonts` und wird in
+die Anwendung eingebettet — auf keinem Windows ist sie vorinstalliert, und ohne
+Einbettung fiele WPF stillschweigend auf eine Ersatzschrift zurück.
+
+Angesprochen wird sie über die Ressource `HeadingFont` in `App.xaml`. Die Schreibweise
+`pack://application:,,,/Assets/Fonts/#Bebas Neue` ist Pflicht: hinter dem Doppelkreuz
+steht der Familienname aus der Schriftdatei, nicht der Dateiname.
+
+Zwei Dinge sind beim Setzen zu beachten:
+
+- **Nur Versalien.** Bebas Neue hat keine Kleinbuchstaben; Fließtext bleibt deshalb bei
+  Segoe UI. Betroffen sind ausschließlich Überschriften, Reiter und Knopfbeschriftungen.
+- **Kein Fettschnitt.** Es gibt nur „Regular". Ein `FontWeight="Bold"` ließe WPF eine
+  künstliche Fettung berechnen, die unsauber aussieht — deshalb steht bei diesen
+  Textblöcken gar kein FontWeight.
+
+Weil die Schrift schmaler läuft als Segoe UI, sind die Schriftgrade der Überschriften
+gegenüber vorher angehoben.

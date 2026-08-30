@@ -43,16 +43,16 @@
                     </Image.Source>
                 </Image>
                 <StackPanel VerticalAlignment="Center" Margin="14,0,0,0">
-                    <TextBlock Text="T A S K   F O R C E   1 1" FontSize="14" FontWeight="Bold"
+                    <TextBlock Text="T A S K  F O R C E  1 1" FontSize="19" FontFamily="{StaticResource HeadingFont}"
                                Foreground="{StaticResource TextBrush}" />
-                    <TextBlock Text="LAUNCHER" FontSize="10" Foreground="{StaticResource MutedBrush}"
-                               Margin="0,3,0,0" />
+                    <TextBlock Text="LAUNCHER" FontSize="12" FontFamily="{StaticResource HeadingFont}" Foreground="{StaticResource MutedBrush}"
+                               Margin="0,1,0,0" />
                 </StackPanel>
             </StackPanel>
 
             <Border Grid.Row="1" Height="1" Background="{StaticResource PanelBorderBrush}" Margin="0,18,0,0" />
 
-            <TextBlock Grid.Row="2" Text="A K T U A L I S I E R U N G" FontSize="11" FontWeight="SemiBold"
+            <TextBlock Grid.Row="2" Text="A K T U A L I S I E R U N G" FontSize="14" FontFamily="{StaticResource HeadingFont}"
                        Foreground="{StaticResource AccentBrush}" Margin="0,16,0,0" />
 
             <!-- Label links, Angabe rechts - das Zeilenmuster der Panel-Karten -->
@@ -62,8 +62,8 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="STATUS" FontSize="10" Foreground="{StaticResource MutedBrush}"
-                           VerticalAlignment="Top" Margin="0,2,14,0" />
+                <TextBlock Grid.Column="0" Text="STATUS" FontSize="12" FontFamily="{StaticResource HeadingFont}" Foreground="{StaticResource MutedBrush}"
+                           VerticalAlignment="Top" Margin="0,1,14,0" />
                 <TextBlock x:Name="StatusLabel" Grid.Column="1" Text="Suche nach Updates…" FontSize="12"
                            Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" />
             </Grid>
