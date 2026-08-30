@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using TaskForce11Launcher.Interop;
 using TaskForce11Launcher.Models;
+using TaskForce11Launcher.Services;
 
 namespace TaskForce11Launcher;
 
@@ -15,6 +16,7 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         WindowCornerHelper.ApplyRoundedCorners(this);
+        BackgroundImage.Source = BackgroundImageService.LoadCached();
         _original = current;
         ResultSettings = current;
 

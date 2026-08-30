@@ -53,6 +53,11 @@
 
             <SolidColorBrush x:Key="TabActiveBrush" Color="#2EC43D2E" />
 
+            <!-- Legt sich in den kleineren Fenstern ueber das Hintergrundbild. Kraeftiger
+                 als die Abdunklung im Hauptfenster: dort traegt das Bild die Flaeche, hier
+                 steht Text unmittelbar darauf und muss ohne Anstrengung lesbar bleiben. -->
+            <SolidColorBrush x:Key="DialogScrimBrush" Color="#DE151210" />
+
             <!-- Deutlich flacher als zuvor: eine leichte Absetzung nach unten, kein
                  schwebender Schlagschatten. -->
             <DropShadowEffect x:Key="CardShadowEffect" Color="#000000" Direction="270" BlurRadius="14" ShadowDepth="3" Opacity="0.5" />

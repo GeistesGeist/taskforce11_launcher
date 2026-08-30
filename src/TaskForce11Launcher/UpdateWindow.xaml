@@ -17,8 +17,17 @@
          Kasten mit duennem Rand, oben die Kennung, darunter ein gesperrter
          Abschnittskopf ueber einer Trennlinie, und der Wert als Zeile aus Label
          links und Angabe rechts. -->
-    <Border CornerRadius="2" Background="#F51A1714"
+    <Border CornerRadius="2" Background="{StaticResource FallbackBackgroundBrush}"
             BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
+        <Grid>
+            <!-- Dasselbe Hintergrundbild wie im Hauptfenster, aus dem lokalen
+                 Zwischenspeicher. Beim allerersten Start liegt dort noch nichts -
+                 dann bleibt der Farbverlauf stehen. -->
+            <Grid ClipToBounds="True">
+                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+                <Rectangle Fill="{StaticResource DialogScrimBrush}" />
+            </Grid>
+
         <Grid Margin="26,22">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -72,6 +81,7 @@
                            Foreground="{StaticResource MutedBrush}" Margin="12,0,0,0"
                            VerticalAlignment="Center" MinWidth="34" TextAlignment="Right" />
             </Grid>
+        </Grid>
         </Grid>
     </Border>
 </Window>

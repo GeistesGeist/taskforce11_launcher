@@ -50,6 +50,15 @@
 
     <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1">
         <Grid>
+            <!-- Hintergrundbild aus dem lokalen Zwischenspeicher, kraeftig abgedunkelt.
+                 Die Karte darueber bringt ihre eigene, fast deckende Flaeche mit, das
+                 Bild bleibt also auf den Rand ringsum beschraenkt. -->
+            <Grid ClipToBounds="True">
+                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+                <Rectangle Fill="{StaticResource DialogScrimBrush}" />
+            </Grid>
+
+            <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="*" />
@@ -122,6 +131,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
+            </Grid>
         </Grid>
     </Border>
 </Window>

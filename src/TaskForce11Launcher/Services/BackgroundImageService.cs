@@ -25,7 +25,11 @@ public sealed class BackgroundImageService
         _http = http;
     }
 
-    public BitmapImage? LoadCached()
+    /// <summary>
+    /// Das zuletzt gespeicherte Hintergrundbild, oder null. Bewusst statisch: auch das
+    /// Update-Fenster braucht es, und das laeuft, bevor irgendein Dienst erzeugt wurde.
+    /// </summary>
+    public static BitmapImage? LoadCached()
     {
         if (!File.Exists(CachePath)) return null;
 

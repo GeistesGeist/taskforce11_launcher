@@ -495,7 +495,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     {
         // Erst das zwischengespeicherte Bild zeigen, damit das Fenster nicht leer
         // aufgeht, dann im Hintergrund gegen die aktuelle Fassung tauschen.
-        BackgroundImageSource = _backgroundImageService.LoadCached();
+        BackgroundImageSource = BackgroundImageService.LoadCached();
 
         if (string.IsNullOrWhiteSpace(_settings.ServerDataUrl)) return;
 

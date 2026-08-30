@@ -16,6 +16,7 @@ public partial class UpdateWindow : Window
     {
         InitializeComponent();
         WindowCornerHelper.ApplyRoundedCorners(this);
+        BackgroundImage.Source = BackgroundImageService.LoadCached();
     }
 
     /// <summary>

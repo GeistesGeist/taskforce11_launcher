@@ -17,9 +17,17 @@
     <!-- Rückfragen und Meldungen als Panel-Karte statt als Windows-Standarddialog:
          Kopfzeile in Versalien über einer Trennlinie, darunter der Text, unten die
          Knöpfe rechtsbündig - dieselbe Ordnung wie im Einstellungsfenster. -->
-    <Border CornerRadius="2" Background="#F51A1714"
+    <Border CornerRadius="2" Background="{StaticResource FallbackBackgroundBrush}"
             BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
-        <StackPanel Margin="24,20">
+        <Grid>
+            <!-- Hintergrundbild aus dem lokalen Zwischenspeicher, kraeftig abgedunkelt -
+                 hier steht Text unmittelbar darauf. -->
+            <Grid ClipToBounds="True">
+                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+                <Rectangle Fill="{StaticResource DialogScrimBrush}" />
+            </Grid>
+
+            <StackPanel Margin="24,20">
             <TextBlock x:Name="HeadingLabel" FontSize="12" FontWeight="SemiBold"
                        Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" />
 
@@ -34,6 +42,7 @@
                 <Button x:Name="ConfirmButton" Content="Ja" Click="OnConfirmClick"
                         MinWidth="88" IsDefault="True" />
             </StackPanel>
-        </StackPanel>
+            </StackPanel>
+        </Grid>
     </Border>
 </Window>
