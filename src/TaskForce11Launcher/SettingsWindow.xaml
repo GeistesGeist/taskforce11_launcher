@@ -53,8 +53,7 @@
             <!-- Hintergrundbild aus dem lokalen Zwischenspeicher, kraeftig abgedunkelt.
                  Die Karte darueber bringt ihre eigene, fast deckende Flaeche mit, das
                  Bild bleibt also auf den Rand ringsum beschraenkt. -->
-            <Grid ClipToBounds="True">
-                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+            <Grid x:Name="BackgroundLayer">
                 <Rectangle Fill="{StaticResource DialogScrimBrush}" />
             </Grid>
 

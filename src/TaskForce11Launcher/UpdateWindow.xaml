@@ -23,8 +23,7 @@
             <!-- Dasselbe Hintergrundbild wie im Hauptfenster, aus dem lokalen
                  Zwischenspeicher. Beim allerersten Start liegt dort noch nichts -
                  dann bleibt der Farbverlauf stehen. -->
-            <Grid ClipToBounds="True">
-                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+            <Grid x:Name="BackgroundLayer">
                 <Rectangle Fill="{StaticResource DialogScrimBrush}" />
             </Grid>
 

@@ -21,9 +21,12 @@
             BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
         <Grid>
             <!-- Hintergrundbild aus dem lokalen Zwischenspeicher, kraeftig abgedunkelt -
-                 hier steht Text unmittelbar darauf. -->
-            <Grid ClipToBounds="True">
-                <Image x:Name="BackgroundImage" Stretch="UniformToFill" />
+                 hier steht Text unmittelbar darauf.
+                 Als Hintergrundpinsel, nicht als Image-Element: ein Image meldet die
+                 Groesse seiner Bildquelle als Wunschgroesse, und weil dieses Fenster
+                 seine Hoehe aus dem Inhalt bezieht (SizeToContent), wuerde es dadurch auf
+                 Bildhoehe aufgeblasen. Ein Pinsel geht in die Messung nicht ein. -->
+            <Grid x:Name="BackgroundLayer">
                 <Rectangle Fill="{StaticResource DialogScrimBrush}" />
             </Grid>
 

@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using TaskForce11Launcher.Interop;
-using TaskForce11Launcher.Services;
 
 namespace TaskForce11Launcher;
 
@@ -15,7 +14,7 @@ public partial class MessageWindow : Window
     {
         InitializeComponent();
         WindowCornerHelper.ApplyRoundedCorners(this);
-        BackgroundImage.Source = BackgroundImageService.LoadCached();
+        this.ApplyCachedBackground();
 
         HeadingLabel.Text = heading;
         MessageLabel.Text = message;
