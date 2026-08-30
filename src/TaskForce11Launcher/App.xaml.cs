@@ -51,7 +51,37 @@ public partial class App : Application
         var settings = new SettingsService().Load();
         if (!string.IsNullOrWhiteSpace(settings.GithubRepoUrl))
         {
-            await new UpdateService(settings.GithubRepoUrl).CheckAndApplyAsync();
+            // Standardmaessig beendet WPF die Anwendung, sobald das letzte Fenster
+            // schliesst. Waehrend der Update-Pruefung ist das Splash-Fenster aber das
+            // einzige - sein Schliessen wuerde den Launcher beenden, bevor das
+            // Hauptfenster ueberhaupt existiert.
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            var splash = new UpdateWindow();
+            splash.Show();
+
+            bool applied;
+            try
+            {
+                // Progress<T> stellt die Meldungen auf den Thread zu, auf dem es erzeugt
+                // wurde - hier also den UI-Thread, das Fenster darf direkt angefasst werden.
+                applied = await new UpdateService(settings.GithubRepoUrl)
+                    .CheckAndApplyAsync(new Progress<UpdateStatus>(splash.Report));
+            }
+            finally
+            {
+                splash.Close();
+            }
+
+            // Wurde etwas eingespielt, laeuft bereits der Neustart - dann hier kein
+            // Hauptfenster mehr aufziehen, das gleich wieder verschwinden wuerde.
+            if (applied)
+            {
+                Shutdown();
+                return;
+            }
+
+            ShutdownMode = ShutdownMode.OnLastWindowClose;
         }
 
         var window = new MainWindow();

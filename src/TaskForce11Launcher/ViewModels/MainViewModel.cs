@@ -23,6 +23,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     private readonly SteamWorkshopService _steamWorkshop = new();
     private readonly BackgroundImageService _backgroundImageService;
     private readonly ModVersionCache _modVersionCache = new();
+    private readonly UpdateService _updateService;
 
     private readonly CancellationTokenSource _shutdownCts = new();
 
@@ -37,10 +38,13 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         _backgroundImageService = new BackgroundImageService(_http);
         _settings = _settingsService.Load();
 
+        _updateService = new UpdateService(_settings.GithubRepoUrl);
+
         DetectPaths();
         _ = LoadServerDataAndBackgroundAsync();
         _ = InitializeSteamAsync();
         _ = ServerStatusLoopAsync(_shutdownCts.Token);
+        _ = UpdateCheckLoopAsync(_shutdownCts.Token);
         _ = CheckModsAsync();
     }
 
@@ -126,6 +130,13 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     /// <summary>Adresse des TeamSpeak-Servers; null blendet den TS-Knopf aus.</summary>
     [ObservableProperty]
     private string? _teamspeakHost;
+
+    /// <summary>
+    /// Version eines heruntergeladenen, noch nicht eingespielten Updates - null, solange
+    /// nichts bereitliegt. Steuert den Hinweis in der Kommandoleiste.
+    /// </summary>
+    [ObservableProperty]
+    private string? _availableUpdateVersion;
 
     public AppSettings Settings => _settings;
 
@@ -631,6 +642,77 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// Sieht in ruhigem Takt nach, ob ein neues Release vorliegt, und laedt es im
+    /// Hintergrund herunter. Eingespielt wird es nicht von selbst - der Launcher steht
+    /// womoeglich neben einer laufenden Arma-Sitzung, und ein ungefragter Neustart waere
+    /// dort das Letzte, was jemand gebrauchen kann. Stattdessen erscheint der Hinweis in
+    /// der Kommandoleiste, und der Spieler entscheidet, wann er neu startet.
+    ///
+    /// Beim Start selbst wird bereits geprueft und sofort eingespielt (siehe App); diese
+    /// Schleife fuellt die Luecke fuer Launcher, die stundenlang offen stehen - typisch
+    /// an einem Missionsabend, an dem noch schnell ein Release herausgeht.
+    /// </summary>
+    private async Task UpdateCheckLoopAsync(CancellationToken ct)
+    {
+        // Der Start hat gerade eben geprueft - ein sofortiger zweiter Durchlauf brächte
+        // nichts als eine ueberfluessige Anfrage.
+        try
+        {
+            await Task.Delay(TimeSpan.FromMinutes(30), ct);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        while (!ct.IsCancellationRequested)
+        {
+            var version = await _updateService.CheckAndDownloadAsync(ct);
+            if (version is not null && AvailableUpdateVersion != version)
+            {
+                AvailableUpdateVersion = version;
+                Log($"Version {version} steht bereit - Launcher neu starten, um sie zu übernehmen.");
+            }
+
+            try
+            {
+                await Task.Delay(TimeSpan.FromMinutes(30), ct);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Spielt das bereitliegende Update ein und startet den Launcher neu. Laeuft gerade
+    /// Arma, wird vorher gefragt - der Neustart des Launchers beendet zwar nicht das
+    /// Spiel, aber die Modpruefung und die Serveranzeige sind waehrenddessen weg.
+    /// </summary>
+    [RelayCommand]
+    private void RestartToUpdate()
+    {
+        if (AvailableUpdateVersion is null) return;
+
+        if (IsArma3Running || IsBusy)
+        {
+            var confirm = MessageBox.Show(
+                IsArma3Running
+                    ? "Arma 3 läuft gerade. Der Launcher startet neu - das Spiel bleibt davon unberührt. Fortfahren?"
+                    : "Es läuft gerade ein Vorgang. Der Launcher startet neu und bricht ihn ab. Fortfahren?",
+                $"Update auf {AvailableUpdateVersion}",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (confirm != MessageBoxResult.Yes) return;
+        }
+
+        Log($"Update auf {AvailableUpdateVersion} wird eingespielt, Launcher startet neu…");
+        _updateService.ApplyPendingAndRestart();
     }
 
     public void SaveSettings(AppSettings settings)

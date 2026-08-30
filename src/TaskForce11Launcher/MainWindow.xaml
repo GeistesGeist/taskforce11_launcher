@@ -172,8 +172,24 @@
 
                             <Border Grid.Column="4" Width="1" Background="{StaticResource PanelBorderBrush}" Margin="18,2" />
 
-                            <!-- Spalte 5 bleibt leer und dehnt sich - so wandert der Status
-                                 an den rechten Rand, direkt vor den START-Knopf. -->
+                            <!-- Liegt ein Update bereit, sitzt der Hinweis in der sonst
+                                 leeren Dehnspalte - sichtbar, aber ohne den START-Knopf
+                                 zu verdraengen. -->
+                            <Button Grid.Column="5" Command="{Binding RestartToUpdateCommand}"
+                                    Style="{StaticResource GhostButtonStyle}" Padding="12,7" Margin="0,0,16,0"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    ToolTip="Launcher neu starten und Update übernehmen"
+                                    Visibility="{Binding AvailableUpdateVersion, Converter={x:Static conv:NullToVisibilityConverter.Instance}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="6" Height="6" VerticalAlignment="Center" Fill="{StaticResource OkBrush}" />
+                                    <TextBlock Text="{Binding AvailableUpdateVersion, StringFormat='Update {0} bereit'}"
+                                               FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"
+                                               Margin="7,0,0,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="— neu starten" FontSize="11" Foreground="{StaticResource MutedBrush}"
+                                               Margin="5,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+
                             <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Center"
                                         MaxWidth="260" Margin="0,0,16,0">
                                 <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{StaticResource MutedBrush}"

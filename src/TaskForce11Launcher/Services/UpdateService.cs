@@ -1,11 +1,21 @@
 ﻿using System.IO;
+using System.Threading;
 using Velopack;
 using Velopack.Sources;
 
 namespace TaskForce11Launcher.Services;
 
+/// <summary>Was der Updater gerade tut - fuer die Anzeige waehrend des Starts.</summary>
+public sealed record UpdateStatus(string Message, int? PercentComplete = null);
+
 /// <summary>
 /// Selbstaktualisierung ueber die GitHub-Releases des Einheits-Repos (Velopack).
+///
+/// Zwei Wege hinein: beim Start wird geprueft, geladen und sofort eingespielt
+/// (<see cref="CheckAndApplyAsync"/>), waehrend der Laufzeit dagegen nur geprueft und
+/// im Hintergrund geladen (<see cref="CheckAndDownloadAsync"/>) - eingespielt wird
+/// dann erst, wenn der Spieler es selbst auslöst. Mitten in einer laufenden Sitzung
+/// ungefragt neu zu starten waere das Letzte, was jemand gebrauchen kann.
 /// </summary>
 public sealed class UpdateService
 {
@@ -17,6 +27,8 @@ public sealed class UpdateService
     private static readonly TimeSpan RetryCooldown = TimeSpan.FromMinutes(3);
 
     private readonly string _githubRepoUrl;
+    private UpdateManager? _manager;
+    private UpdateInfo? _pendingUpdate;
 
     // Bewusst eine eigene Markierungsdatei und kein Feld in settings.json: das ist
     // Buchhaltung des Updaters, keine Einstellung des Spielers.
@@ -29,18 +41,33 @@ public sealed class UpdateService
         _githubRepoUrl = githubRepoUrl;
     }
 
-    public async Task<bool> CheckAndApplyAsync(Action<string>? onStatus = null)
-    {
-        if (string.IsNullOrWhiteSpace(_githubRepoUrl)) return false;
+    /// <summary>Version des geladenen, noch nicht eingespielten Updates - sonst null.</summary>
+    public string? PendingVersion => _pendingUpdate?.TargetFullRelease.Version.ToString();
 
+    /// <summary>
+    /// Im Entwicklungsbetrieb (kein per Setup.exe installiertes Paket) gibt es nichts zu
+    /// aktualisieren - dann meldet sich der Updater gar nicht erst.
+    /// </summary>
+    private UpdateManager? GetManager()
+    {
+        if (string.IsNullOrWhiteSpace(_githubRepoUrl)) return null;
+
+        _manager ??= new UpdateManager(new GithubSource(_githubRepoUrl, null, false));
+        return _manager.IsInstalled ? _manager : null;
+    }
+
+    /// <summary>
+    /// Startpfad: pruefen, laden und sofort einspielen. Gibt true zurueck, wenn der
+    /// Neustart eingeleitet wurde - der Aufrufer soll dann nichts weiter tun.
+    /// </summary>
+    public async Task<bool> CheckAndApplyAsync(IProgress<UpdateStatus>? progress = null)
+    {
         try
         {
-            var manager = new UpdateManager(new GithubSource(_githubRepoUrl, null, false));
-            if (!manager.IsInstalled)
-            {
-                onStatus?.Invoke("Kein installiertes Paket erkannt (Entwicklungsmodus) - Update-Prüfung übersprungen.");
-                return false;
-            }
+            var manager = GetManager();
+            if (manager is null) return false;
+
+            progress?.Report(new UpdateStatus("Suche nach Updates…"));
 
             var update = await manager.CheckForUpdatesAsync();
             if (update is null)
@@ -50,7 +77,6 @@ public sealed class UpdateService
                 // ein spaeterer, echt gescheiterter Versuch nicht von einem Ueberbleibsel
                 // verdeckt wird.
                 ClearLastAttempt();
-                onStatus?.Invoke("Launcher ist aktuell.");
                 return false;
             }
 
@@ -65,19 +91,16 @@ public sealed class UpdateService
             var (lastVersion, lastAttemptAt) = ReadLastAttempt();
             if (lastVersion == targetVersion && DateTime.UtcNow - lastAttemptAt < RetryCooldown)
             {
-                onStatus?.Invoke(
-                    $"Update auf {targetVersion} ist beim letzten Versuch nicht angekommen - wird für ein paar " +
-                    "Minuten übersprungen, damit keine Endlosschleife entsteht. Ein Neustart des Launchers " +
-                    "versucht es automatisch erneut, sobald die Sperre abgelaufen ist. Falls es weiter " +
-                    "fehlschlägt: Ordner %LocalAppData%\\TaskForce11Launcher löschen und die neueste " +
-                    "Setup.exe von GitHub frisch installieren.");
+                progress?.Report(new UpdateStatus(
+                    $"Update auf {targetVersion} ist beim letzten Versuch nicht angekommen - wird kurz übersprungen."));
                 return false;
             }
 
-            onStatus?.Invoke($"Update {targetVersion} wird geladen…");
-            await manager.DownloadUpdatesAsync(update);
+            progress?.Report(new UpdateStatus($"Lade Version {targetVersion}…", 0));
+            await manager.DownloadUpdatesAsync(update, p => progress?.Report(
+                new UpdateStatus($"Lade Version {targetVersion}…", p)));
 
-            onStatus?.Invoke("Update wird installiert, Launcher startet neu…");
+            progress?.Report(new UpdateStatus("Update wird installiert, Launcher startet neu…", 100));
             WriteLastAttempt(targetVersion);
             manager.ApplyUpdatesAndRestart(update);
             return true;
@@ -87,9 +110,53 @@ public sealed class UpdateService
             // Ohne Netz, mit blockierender Firewall oder bei einem GitHub-Ausfall soll der
             // Launcher trotzdem starten - eine gescheiterte Update-Pruefung ist kein
             // Grund, niemanden mehr aufs Spiel zu lassen.
-            onStatus?.Invoke($"Update-Prüfung fehlgeschlagen: {ex.Message}");
+            progress?.Report(new UpdateStatus($"Update-Prüfung fehlgeschlagen: {ex.Message}"));
             return false;
         }
+    }
+
+    /// <summary>
+    /// Laufzeitpfad: pruefen und - wenn es etwas gibt - im Hintergrund herunterladen,
+    /// aber nicht einspielen. Gibt die Version zurueck, sobald sie bereitliegt, sonst
+    /// null. Danach wartet sie auf <see cref="ApplyPendingAndRestart"/>.
+    /// </summary>
+    public async Task<string?> CheckAndDownloadAsync(CancellationToken ct = default)
+    {
+        // Schon etwas geladen? Dann nicht erneut suchen - die Version liegt bereit und
+        // wartet nur noch darauf, eingespielt zu werden.
+        if (_pendingUpdate is not null) return PendingVersion;
+
+        try
+        {
+            var manager = GetManager();
+            if (manager is null) return null;
+
+            var update = await manager.CheckForUpdatesAsync();
+            if (update is null) return null;
+
+            await manager.DownloadUpdatesAsync(update, cancelToken: ct);
+
+            _pendingUpdate = update;
+            return PendingVersion;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // Im Hintergrund und ohne Zutun des Spielers - ein Fehlschlag bleibt hier
+            // folgenlos, beim naechsten Durchlauf wird es erneut versucht.
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Spielt das bereitliegende Update ein und startet den Launcher neu. Kehrt nur
+    /// zurueck, wenn nichts bereitlag.
+    /// </summary>
+    public void ApplyPendingAndRestart()
+    {
+        if (_pendingUpdate is null || _manager is null) return;
+
+        WriteLastAttempt(_pendingUpdate.TargetFullRelease.Version.ToString());
+        _manager.ApplyUpdatesAndRestart(_pendingUpdate);
     }
 
     private static (string? Version, DateTime AttemptedAtUtc) ReadLastAttempt()
