@@ -53,10 +53,14 @@
 
             <SolidColorBrush x:Key="TabActiveBrush" Color="#2EC43D2E" />
 
-            <!-- Legt sich in den kleineren Fenstern ueber das Hintergrundbild. Kraeftiger
-                 als die Abdunklung im Hauptfenster: dort traegt das Bild die Flaeche, hier
-                 steht Text unmittelbar darauf und muss ohne Anstrengung lesbar bleiben. -->
-            <SolidColorBrush x:Key="DialogScrimBrush" Color="#DE151210" />
+            <!-- Legt sich in den kleineren Fenstern ueber das Hintergrundbild.
+                 Bewusst nur ein Hauch: das Bild der Einheit hat eine mittlere Helligkeit
+                 von rund 18 von 255 und ist damit praktisch schwarz. Eine kraeftige
+                 Abdunklung - anfangs lagen hier 87 % - loescht es vollstaendig aus, statt
+                 nur seine Spitzen zu daempfen. Fuer die Lesbarkeit braucht es sie auch
+                 nicht: Text in #CFCABF steht darauf mit weit ueber dem geforderten
+                 Kontrast. -->
+            <SolidColorBrush x:Key="DialogScrimBrush" Color="#38151210" />
 
             <!-- Deutlich flacher als zuvor: eine leichte Absetzung nach unten, kein
                  schwebender Schlagschatten. -->
