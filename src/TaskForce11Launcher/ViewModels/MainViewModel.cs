@@ -378,13 +378,13 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             return;
         }
 
-        var confirm = MessageBox.Show(
+        var confirmed = MessageWindow.Confirm(
+            "MOD NEU HERUNTERLADEN",
             $"„{item.Name}“ wird gelöscht und komplett neu heruntergeladen. Fortfahren?",
-            "Mod neu herunterladen",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
+            confirmText: "Neu laden",
+            cancelText: "Abbrechen");
 
-        if (confirm != MessageBoxResult.Yes) return;
+        if (!confirmed) return;
 
         EnterBusy();
         item.Status = ModStatus.Redownloading;
@@ -713,15 +713,15 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
         if (IsArma3Running || IsBusy)
         {
-            var confirm = MessageBox.Show(
+            var confirmed = MessageWindow.Confirm(
+                $"UPDATE AUF {AvailableUpdateVersion}",
                 IsArma3Running
-                    ? "Arma 3 läuft gerade. Der Launcher startet neu - das Spiel bleibt davon unberührt. Fortfahren?"
+                    ? "Arma 3 läuft gerade. Der Launcher startet neu — das Spiel bleibt davon unberührt. Fortfahren?"
                     : "Es läuft gerade ein Vorgang. Der Launcher startet neu und bricht ihn ab. Fortfahren?",
-                $"Update auf {AvailableUpdateVersion}",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+                confirmText: "Neu starten",
+                cancelText: "Abbrechen");
 
-            if (confirm != MessageBoxResult.Yes) return;
+            if (!confirmed) return;
         }
 
         Log($"Update auf {AvailableUpdateVersion} wird eingespielt, Launcher startet neu…");

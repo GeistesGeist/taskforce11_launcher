@@ -31,11 +31,12 @@ public partial class App : Application
 
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         {
-            MessageBox.Show(
-                $"Unerwarteter Fehler: {args.ExceptionObject}",
-                "TaskForce11 Launcher",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            // Der Handler kann auf einem beliebigen Thread anschlagen, ein Fenster laesst
+            // sich aber nur auf dem UI-Thread oeffnen - deshalb der Umweg ueber den
+            // Dispatcher.
+            Dispatcher.Invoke(() => MessageWindow.Inform(
+                "UNERWARTETER FEHLER",
+                args.ExceptionObject.ToString() ?? "Unbekannter Fehler."));
         };
 
         // Updates vor allem anderen pruefen und einspielen - vor allem, bevor

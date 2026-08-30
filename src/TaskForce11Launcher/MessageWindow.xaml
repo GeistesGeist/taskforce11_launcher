@@ -1,0 +1,39 @@
+﻿<Window x:Class="TaskForce11Launcher.MessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TaskForce11 Launcher"
+        Icon="Assets/app.ico"
+        Width="440" SizeToContent="Height"
+        Background="Transparent"
+        Foreground="{StaticResource TextBrush}"
+        FontFamily="Segoe UI"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        KeyDown="OnKeyDown">
+
+    <!-- Rückfragen und Meldungen als Panel-Karte statt als Windows-Standarddialog:
+         Kopfzeile in Versalien über einer Trennlinie, darunter der Text, unten die
+         Knöpfe rechtsbündig - dieselbe Ordnung wie im Einstellungsfenster. -->
+    <Border CornerRadius="2" Background="#F51A1714"
+            BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
+        <StackPanel Margin="24,20">
+            <TextBlock x:Name="HeadingLabel" FontSize="12" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" />
+
+            <Border Height="1" Background="{StaticResource PanelBorderBrush}" Margin="0,12,0,0" />
+
+            <TextBlock x:Name="MessageLabel" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                       TextWrapping="Wrap" Margin="0,16,0,0" LineHeight="19" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                <Button x:Name="CancelButton" Content="Nein" Style="{StaticResource GhostButtonStyle}"
+                        Click="OnCancelClick" Margin="0,0,8,0" MinWidth="88" />
+                <Button x:Name="ConfirmButton" Content="Ja" Click="OnConfirmClick"
+                        MinWidth="88" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
