@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Task Force 11 Launcher"
         Icon="Assets/app.ico"
-        Height="240" Width="420"
+        Height="272" Width="460"
         Background="Transparent"
         Foreground="{StaticResource TextBrush}"
         FontFamily="Segoe UI"
@@ -12,37 +12,66 @@
         ResizeMode="NoResize"
         ShowInTaskbar="True"
         WindowStartupLocation="CenterScreen">
-    <Border CornerRadius="3" Background="{StaticResource FallbackBackgroundBrush}"
+
+    <!-- Aufgebaut wie eine Karte der Einheitsverwaltung: flacher, fast schwarzer
+         Kasten mit duennem Rand, oben die Kennung, darunter ein gesperrter
+         Abschnittskopf ueber einer Trennlinie, und der Wert als Zeile aus Label
+         links und Angabe rechts. -->
+    <Border CornerRadius="2" Background="#F51A1714"
             BorderBrush="{StaticResource PanelStrokeBrush}" BorderThickness="1">
-        <Grid Margin="28,26">
+        <Grid Margin="26,22">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Image Width="44" Height="44" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Image Width="40" Height="40" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
                     <Image.Source>
                         <BitmapImage UriSource="Assets/logo.png" DecodePixelWidth="128" />
                     </Image.Source>
                 </Image>
                 <StackPanel VerticalAlignment="Center" Margin="14,0,0,0">
-                    <TextBlock Text="TASK FORCE 11" FontSize="15" FontWeight="Bold"
+                    <TextBlock Text="T A S K   F O R C E   1 1" FontSize="14" FontWeight="Bold"
                                Foreground="{StaticResource TextBrush}" />
-                    <TextBlock Text="Launcher" FontSize="11" Foreground="{StaticResource MutedBrush}" />
+                    <TextBlock Text="LAUNCHER" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                               Margin="0,3,0,0" />
                 </StackPanel>
             </StackPanel>
 
-            <Border Grid.Row="1" Height="1" Background="{StaticResource FadeDividerBrush}"
-                    VerticalAlignment="Top" Margin="0,20,0,0" />
+            <Border Grid.Row="1" Height="1" Background="{StaticResource PanelBorderBrush}" Margin="0,18,0,0" />
 
-            <StackPanel Grid.Row="2">
-                <TextBlock x:Name="StatusLabel" Text="Suche nach Updates…" FontSize="12"
-                           Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
-                           HorizontalAlignment="Center" TextAlignment="Center" MinHeight="34" />
-                <ProgressBar x:Name="Progress" Height="4" Margin="0,12,0,0" IsIndeterminate="True" />
-            </StackPanel>
+            <TextBlock Grid.Row="2" Text="A K T U A L I S I E R U N G" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{StaticResource AccentBrush}" Margin="0,16,0,0" />
+
+            <!-- Label links, Angabe rechts - das Zeilenmuster der Panel-Karten -->
+            <Grid Grid.Row="3" VerticalAlignment="Center" Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="STATUS" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                           VerticalAlignment="Top" Margin="0,2,14,0" />
+                <TextBlock x:Name="StatusLabel" Grid.Column="1" Text="Suche nach Updates…" FontSize="12"
+                           Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" />
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ProgressBar x:Name="Progress" Grid.Column="0" Height="3" IsIndeterminate="True"
+                             VerticalAlignment="Center" />
+                <TextBlock x:Name="PercentLabel" Grid.Column="1" Text="" FontSize="10"
+                           Foreground="{StaticResource MutedBrush}" Margin="12,0,0,0"
+                           VerticalAlignment="Center" MinWidth="34" TextAlignment="Right" />
+            </Grid>
         </Grid>
     </Border>
 </Window>

@@ -32,10 +32,12 @@ public partial class UpdateWindow : Window
         {
             Progress.IsIndeterminate = false;
             Progress.Value = percent;
+            PercentLabel.Text = $"{percent} %";
         }
         else
         {
             Progress.IsIndeterminate = true;
+            PercentLabel.Text = string.Empty;
         }
     }
 }
