@@ -68,8 +68,11 @@ public sealed class ServerStatusService
         // verwirft, bricht er mit einer ObjectDisposedException ab - unbeobachtet waere
         // das eine TaskScheduler.UnobservedTaskException, und die reisst den Prozess
         // ueber den Finalizer-Thread mit, obwohl hier nichts Schlimmes passiert ist.
+        // Block-Lambda, kein Ausdruck: "t => _ = t.Exception" hat einen Wert und passt
+        // damit auf ContinueWith(Action<...>) wie auf ContinueWith<TResult>(Func<...>) -
+        // der Aufruf waere mehrdeutig.
         _ = receiveTask.ContinueWith(
-            t => _ = t.Exception,
+            t => { _ = t.Exception; },
             CancellationToken.None,
             TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
             TaskScheduler.Default);

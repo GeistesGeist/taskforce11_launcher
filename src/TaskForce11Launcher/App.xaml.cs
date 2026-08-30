@@ -1,4 +1,7 @@
 using System.Windows;
+// RenderOptions liegt in System.Windows.Media, RenderMode dagegen in
+// System.Windows.Interop - fuer die Zeile unten braucht es beide.
+using System.Windows.Interop;
 using System.Windows.Media;
 using TaskForce11Launcher.Services;
 using Velopack;
