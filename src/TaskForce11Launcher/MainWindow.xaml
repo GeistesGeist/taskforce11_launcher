@@ -246,8 +246,10 @@
                                              Visibility="{Binding IsBusy, Converter={x:Static conv:BoolToVisibilityConverter.Instance}}" />
                             </StackPanel>
 
+                            <!-- Ohne Leuchteffekt: der glomm im Akzentrot und passt nicht mehr
+                                 zur gedeckten Fuellung des Knopfes. -->
                             <Button Grid.Column="7" Content="{Binding StartButtonLabel}" Command="{Binding PrepareAndLaunchCommand}"
-                                    IsEnabled="{Binding CanLaunch}" Effect="{StaticResource AccentGlowEffect}"
+                                    IsEnabled="{Binding CanLaunch}"
                                     FontSize="16" Padding="34,10" />
                         </Grid>
                     </Border>

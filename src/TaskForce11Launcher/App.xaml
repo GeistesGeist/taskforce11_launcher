@@ -42,7 +42,14 @@
 
             <SolidColorBrush x:Key="PanelStrokeBrush" Color="#332F27" />
 
-            <SolidColorBrush x:Key="AccentCtaBrush" Color="#C43D2E" />
+            <!-- Fuellung der Handlungsknoepfe (START, Speichern, Bestaetigen). Gedecktes
+                 Olivbraun statt des Akzentrots; Rot bleibt damit den Markierungen und
+                 aktiven Elementen vorbehalten. Die Zustaende darunter sind Aufhellungen
+                 und Abdunklungen desselben Tons - mit dem alten roten Hover wuerde der
+                 Knopf beim Ueberfahren die Farbe wechseln statt nur heller zu werden. -->
+            <SolidColorBrush x:Key="AccentCtaBrush" Color="#34302A" />
+            <SolidColorBrush x:Key="AccentCtaHoverBrush" Color="#474137" />
+            <SolidColorBrush x:Key="AccentCtaPressedBrush" Color="#26231E" />
 
             <!-- Auslaufende Trennlinie unter dem Einheitsnamen. -->
             <LinearGradientBrush x:Key="FadeDividerBrush" StartPoint="0,0" EndPoint="1,0">
@@ -106,7 +113,10 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
+                            <!-- Feine Kante: die Fuellung liegt farblich nah am Panel, ohne
+                                 Rand verschwaemme der Knopf mit dem Untergrund. -->
                             <Border x:Name="ButtonChrome" Background="{TemplateBinding Background}"
+                                    BorderBrush="#4E4739" BorderThickness="1"
                                     CornerRadius="2" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
@@ -114,10 +124,10 @@
                                 <!-- Aufhellen statt vergroessern: das Panel arbeitet ohne
                                      Bewegung, ein hüpfender Knopf faellt daneben auf. -->
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="ButtonChrome" Property="Background" Value="{StaticResource AccentBrightBrush}" />
+                                    <Setter TargetName="ButtonChrome" Property="Background" Value="{StaticResource AccentCtaHoverBrush}" />
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="ButtonChrome" Property="Background" Value="#A63324" />
+                                    <Setter TargetName="ButtonChrome" Property="Background" Value="{StaticResource AccentCtaPressedBrush}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
