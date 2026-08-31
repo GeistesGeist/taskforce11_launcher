@@ -168,6 +168,50 @@
                 </Setter>
             </Style>
 
+            <!-- Kaestchen im Panel-Stil: kantig, dunkel, mit rotem Haken - so wie die
+                 Ausbildungslisten in der Einheitsverwaltung. Das Standardelement von WPF
+                 bringt einen hellen Windows-Kasten mit und faellt hier heraus. -->
+            <Style TargetType="CheckBox">
+                <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                <Border x:Name="Box" Width="14" Height="14" CornerRadius="2"
+                                        Background="#42000000" BorderBrush="{StaticResource PanelBorderBrush}"
+                                        BorderThickness="1" VerticalAlignment="Center">
+                                    <!-- Haken als Strichzug statt als Schriftzeichen: ein Haken
+                                         aus der Schrift saesse je nach Schriftart anders im
+                                         Kaestchen und liesse sich nicht sauber zentrieren. -->
+                                    <Path x:Name="Check" Data="M 2,6 L 5,9.5 L 11,2.5" Stroke="{StaticResource AccentBrush}"
+                                          StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          StrokeLineJoin="Round" Visibility="Collapsed" />
+                                </Border>
+                                <ContentPresenter x:Name="Label" Margin="8,0,0,0" VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True" />
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource AccentBrightBrush}" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.45" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style TargetType="ProgressBar">
                 <Setter Property="Background" Value="#26000000" />
                 <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />

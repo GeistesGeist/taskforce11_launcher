@@ -156,6 +156,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
@@ -248,9 +249,16 @@
                                              Visibility="{Binding IsBusy, Converter={x:Static conv:BoolToVisibilityConverter.Instance}}" />
                             </StackPanel>
 
+                            <!-- Unmittelbar neben START: hier faellt die Entscheidung, ob mit
+                                 oder ohne Serververbindung gestartet wird, und genau hier
+                                 schaut man kurz vorher hin. -->
+                            <CheckBox Grid.Column="7" Content="Server beitreten" IsChecked="{Binding ConnectToServer}"
+                                      VerticalAlignment="Center" Margin="0,0,18,0"
+                                      ToolTip="Aus: Arma 3 startet mit allen Mods, aber ins Hauptmenü statt auf den Server" />
+
                             <!-- Ohne Leuchteffekt: der glomm im Akzentrot und passt nicht mehr
                                  zur gedeckten Fuellung des Knopfes. -->
-                            <Button Grid.Column="7" Content="{Binding StartButtonLabel}" Command="{Binding PrepareAndLaunchCommand}"
+                            <Button Grid.Column="8" Content="{Binding StartButtonLabel}" Command="{Binding PrepareAndLaunchCommand}"
                                     IsEnabled="{Binding CanLaunch}"
                                     FontSize="16" Padding="34,10" />
                         </Grid>

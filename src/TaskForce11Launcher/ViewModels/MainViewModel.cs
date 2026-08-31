@@ -39,6 +39,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         _settings = _settingsService.Load();
 
         _updateService = new UpdateService(_settings.GithubRepoUrl);
+        ConnectToServer = _settings.ConnectToServer;
 
         DetectPaths();
         _ = LoadServerDataAndBackgroundAsync();
@@ -152,6 +153,27 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     /// </summary>
     [ObservableProperty]
     private string? _availableUpdateVersion;
+
+    /// <summary>
+    /// Steuert das Kästchen neben dem START-Knopf. Die Wahl wird sofort gespeichert, damit
+    /// sie den nächsten Start überdauert.
+    /// </summary>
+    [ObservableProperty]
+    private bool _connectToServer = true;
+
+    partial void OnConnectToServerChanged(bool value)
+    {
+        // Beim ersten Setzen aus den geladenen Einstellungen heraus gibt es nichts zu
+        // sichern - _settings traegt den Wert dann bereits.
+        if (_settings.ConnectToServer == value) return;
+
+        _settings.ConnectToServer = value;
+        _settingsService.Save(_settings);
+
+        Log(value
+            ? "Arma 3 verbindet nach dem Start mit dem Einheitsserver."
+            : "Arma 3 startet ohne Verbindung zum Einheitsserver.");
+    }
 
     public AppSettings Settings => _settings;
 
@@ -583,9 +605,14 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 "Beitritt mit fehlenden Addons ab.");
         }
 
-        Log($"Starte Arma 3 mit {modPaths.Count} Mods…");
+        // Ohne Serverangabe startet Arma ins Hauptmenü - der Modsatz ist derselbe.
+        var server = ConnectToServer ? _serverData?.Arma3 : null;
 
-        var process = GameLauncherService.Launch(arma3Exe, modPaths, _serverData?.Arma3);
+        Log(server is not null
+            ? $"Starte Arma 3 mit {modPaths.Count} Mods und verbinde mit {server.Ip}…"
+            : $"Starte Arma 3 mit {modPaths.Count} Mods, ohne Serververbindung…");
+
+        var process = GameLauncherService.Launch(arma3Exe, modPaths, server);
         StatusText = "Arma 3 gestartet.";
 
         if (process is not null)
