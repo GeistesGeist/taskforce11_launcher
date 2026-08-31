@@ -170,7 +170,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         _settings.ConnectToServer = value;
         _settingsService.Save(_settings);
 
-        Log(value
+        LogOnly(value
             ? "Arma 3 verbindet nach dem Start mit dem Einheitsserver."
             : "Arma 3 startet ohne Verbindung zum Einheitsserver.");
     }
@@ -195,13 +195,21 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
         Arma3Path = _settings.Arma3Path;
 
-        Log(Arma3Path is null
-            ? "Arma 3 wurde nicht automatisch gefunden - bitte den Pfad in den Einstellungen setzen."
-            : $"Arma 3 gefunden: {Arma3Path}");
+        // Der gefundene Pfad ist Nebensache und gehoert in den Verlauf. Ein fehlender
+        // dagegen verhindert jeden Start - der muss in der Statuszeile stehen, auch wenn
+        // dort sonst die Modmeldung sitzt.
+        if (Arma3Path is null)
+        {
+            Log("Arma 3 wurde nicht automatisch gefunden - bitte den Pfad in den Einstellungen setzen.");
+        }
+        else
+        {
+            LogOnly($"Arma 3 gefunden: {Arma3Path}");
+        }
 
         // TeamSpeak ist kein Grund zur Sorge, wenn es fehlt - der Start funktioniert
         // auch ohne, nur der TS-Knopf faellt dann auf den ts3server:-Link zurueck.
-        if (_settings.TeamspeakPath is not null) Log($"TeamSpeak gefunden: {_settings.TeamspeakPath}");
+        if (_settings.TeamspeakPath is not null) LogOnly($"TeamSpeak gefunden: {_settings.TeamspeakPath}");
 
         _settingsService.Save(_settings);
     }
@@ -482,7 +490,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         var client = _settings.TeamspeakPath;
         if (string.IsNullOrWhiteSpace(client) || !File.Exists(client))
         {
-            Log("TeamSpeak-Pfad unbekannt - versuche es über die Windows-Verknüpfung.");
+            LogOnly("TeamSpeak-Pfad unbekannt - versuche es über die Windows-Verknüpfung.");
             OpenExternal(url);
             return;
         }
@@ -497,11 +505,11 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 UseShellExecute = false,
                 WorkingDirectory = Path.GetDirectoryName(client) ?? string.Empty
             });
-            Log($"Verbinde TeamSpeak mit {TeamspeakHost}…");
+            LogOnly($"Verbinde TeamSpeak mit {TeamspeakHost}…");
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            Log($"TeamSpeak konnte nicht gestartet werden ({ex.Message}) - versuche es über die Windows-Verknüpfung.");
+            LogOnly($"TeamSpeak konnte nicht gestartet werden ({ex.Message}) - versuche es über die Windows-Verknüpfung.");
             OpenExternal(url);
         }
     }
@@ -516,7 +524,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         {
             // Kein Programm fuer dieses Schema registriert (kein Standardbrowser, oder
             // TeamSpeak ist nicht installiert) - im Verlauf vermerken statt still schlucken.
-            Log($"„{url}“ konnte nicht geöffnet werden: {ex.Message}");
+            LogOnly($"„{url}“ konnte nicht geöffnet werden: {ex.Message}");
         }
     }
 
@@ -547,7 +555,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            Log($"Serverdaten konnten nicht geladen werden: {ex.Message}");
+            LogOnly($"Serverdaten konnten nicht geladen werden: {ex.Message}");
         }
     }
 
@@ -608,9 +616,12 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         // Ohne Serverangabe startet Arma ins Hauptmenü - der Modsatz ist derselbe.
         var server = ConnectToServer ? _serverData?.Arma3 : null;
 
-        Log(server is not null
-            ? $"Starte Arma 3 mit {modPaths.Count} Mods und verbinde mit {server.Ip}…"
-            : $"Starte Arma 3 mit {modPaths.Count} Mods, ohne Serververbindung…");
+        // In der Statuszeile steht, was mit den Mods passiert; wohin gestartet wird,
+        // gehoert in den Verlauf. Das Kaestchen daneben sagt es ohnehin schon.
+        Log($"Starte Arma 3 mit {modPaths.Count} Mods…");
+        LogOnly(server is not null
+            ? $"Verbinde mit {server.Ip}:{server.Port}."
+            : "Ohne Serververbindung - Arma 3 startet ins Hauptmenü.");
 
         var process = GameLauncherService.Launch(arma3Exe, modPaths, server);
         StatusText = "Arma 3 gestartet.";
@@ -725,7 +736,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             if (version is not null && AvailableUpdateVersion != version)
             {
                 AvailableUpdateVersion = version;
-                Log($"Version {version} steht bereit - Launcher neu starten, um sie zu übernehmen.");
+                LogOnly($"Version {version} steht bereit - Launcher neu starten, um sie zu übernehmen.");
             }
 
             try
@@ -779,13 +790,26 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         DetectPaths();
     }
 
-    private void Log(string message)
+    /// <summary>
+    /// Schreibt in den Verlauf und in die Statuszeile der Kommandoleiste. Fuer alles, was
+    /// den Modabgleich oder den Start betrifft - also das, was dort stehen soll.
+    /// </summary>
+    private void Log(string message) => Write(message, alsStatus: true);
+
+    /// <summary>
+    /// Schreibt nur in den Verlauf. Fuer Nebenlaeufiges wie erkannte Pfade, die
+    /// TeamSpeak-Verbindung oder das Umschalten einer Einstellung: nachlesbar, aber ohne
+    /// die Statuszeile zu belegen, in der die Mod-Meldung stehen soll.
+    /// </summary>
+    private void LogOnly(string message) => Write(message, alsStatus: false);
+
+    private void Write(string message, bool alsStatus)
     {
         Application.Current?.Dispatcher.Invoke(() =>
         {
             var line = $"[{DateTime.Now:HH:mm:ss}] {message}";
             LogText = LogText.Length == 0 ? line : LogText + Environment.NewLine + line;
-            StatusText = message;
+            if (alsStatus) StatusText = message;
         });
     }
 
